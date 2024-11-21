@@ -274,7 +274,6 @@ class View {
                 if(!buttons[clickedRow + 1][clickedCol].getText().isEmpty()){
                     buttons[clickedRow + 2][clickedCol].setEnabled(true);
                     inputWord = inputWord + buttons[clickedRow+1][clickedCol].getText();
-
                 }
                 else {buttons[clickedRow + 1][clickedCol].setEnabled(true);} // Enable tile below for vertical
             }
