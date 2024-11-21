@@ -250,15 +250,20 @@ public class Game {
     public void placeWord(String word, int row, int col, char direction, Player player, int wordLen) {
         for (int i = 0; i < word.length(); i++) {
             char wordtile = word.charAt(i);
-
-            Tile newTile = player.removeTile(new Tile(wordtile)); // remove from player rack
-            player.addTile(tilePile.deleteTile()); // take from tilePile (bag)
-            if (direction == 'H') {
-                board.setTile(row, col + i-wordLen+1, newTile);
+            //skipsover placed tiles
+            if(direction == 'H') {
+                if (board.getTile(row, col+i-wordLen+1).getLetter() == ' ') {
+                    Tile newTile = player.removeTile(new Tile(wordtile)); // remove from player rack
+                    player.addTile(tilePile.deleteTile()); // take from tilePile (bag)
+                    board.setTile(row, col + i - wordLen + 1, newTile);
+                }
             } else { // direction == 'V'
-                board.setTile(row + i-wordLen+1, col, newTile);
+                if (board.getTile(row+i-wordLen+1, col).getLetter() == ' ') {
+                    Tile newTile = player.removeTile(new Tile(wordtile)); // remove from player rack
+                    player.addTile(tilePile.deleteTile()); // take from tilePile (bag)
+                    board.setTile(row + i - wordLen + 1, col, newTile);
             }
-
+            }
         }
         addPoints(word, player);
     }
