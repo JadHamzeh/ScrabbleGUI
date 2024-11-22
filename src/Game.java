@@ -109,7 +109,7 @@ public class Game {
         System.out.println(canPlaceWord(word, row, col, direction, player[currentPlayer]));
         if (canPlaceWord(word.toUpperCase(), row, col, direction, player[currentPlayer])) { // can the word be legally placed
             placeWord(word.toUpperCase(), row, col, direction, player[currentPlayer]); // place it
-            currentPlayer = (currentPlayer + 1) % 4;
+            nextPlayer();
             return true;
         }
         currentPlayerIndex = currentPlayer;
