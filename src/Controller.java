@@ -9,8 +9,6 @@ public abstract class Controller implements ActionListener {
     private View view;
     CustomButton storedButton;
 
-
-
     public Controller() {
         model = new Game();
         this.view = model.getView();

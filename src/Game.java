@@ -309,19 +309,71 @@ public class Game {
     }
 
 
-//AI Logic
-public ArrayList<Character> getBoardLetters(){
-    ArrayList<Character> letters = new ArrayList<>();
+    //AI Logic
+    public ArrayList<Character> getBoardLetters(){
+        ArrayList<Character> letters = new ArrayList<>();
 
-    for (int row = 0; row < 15; row++) {
-        for (int col = 0; col < 15; col++) {
-            Tile tile = getBoard().getTile(row,col);
-            if (!(tile.getLetter() == ' ')){
-                letters.add(tile.getLetter());
+        for (int row = 0; row < 15; row++) {
+            for (int col = 0; col < 15; col++) {
+                Tile tile = getBoard().getTile(row,col);
+                if (!(tile.getLetter() == ' ')){
+                    letters.add(tile.getLetter());
+                }
             }
         }
+        return letters;
     }
 
-    return letters;
-}
+
+    public ArrayList<String> getWords(){
+        ArrayList<Character> boardLetters = getBoardLetters();
+        ArrayList<Character> handLetters =  new ArrayList<Character>();
+        ArrayList<String> words = new ArrayList<>();
+
+        for (Tile tile : getCurrentPlayer().getHand()) {
+            Character tileButton = (tile.getLetter());
+            handLetters.add(tileButton);
+        }
+        for(Character boardLetter: boardLetters){
+            words.addAll(findWords(boardLetter, handLetters));
+        }
+
+        return words;
+    }
+
+    public ArrayList<String> findWords(Character boardLetter, ArrayList<Character> handLetters){
+        ArrayList<String> words = new ArrayList<>();
+
+        //check for combinations here
+
+
+        return words;
+    }
+
+    public String maxPoints(ArrayList<String> wordList){
+        String maxPointWord = "";
+        int maxPoint = 0;
+        ArrayList<Tile> tempTiles = new ArrayList<Tile>();
+        //logic
+        for (String word: wordList){
+            int tempPoint = 0;
+            for (Character letter: word){
+                tempTiles.add(new Tile(letter));
+            }
+
+            for(Tile tile: tempTiles){
+                tempPoint += tile.getPoints();
+            }
+            if (tempPoint>maxPoint){
+                maxPoint = tempPoint;
+                maxPointWord = word;
+            }
+
+            tempTiles.removeAll(String);
+        }
+
+        return maxPointWord;
+    }
+
+
 }
