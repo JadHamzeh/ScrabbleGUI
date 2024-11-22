@@ -105,8 +105,6 @@ public class Game {
         if (!check.isWord(word.toLowerCase()) || word.length() < 2) { // is the word valid in the wordbank
             return false;
         }
-        System.out.println(view.getInputWord().toLowerCase() + view.getDirection() + view.getTargetRow() + view.getTargetCol() );
-        System.out.println(canPlaceWord(word, row, col, direction, player[currentPlayer]));
         if (canPlaceWord(word.toUpperCase(), row, col, direction, player[currentPlayer])) { // can the word be legally placed
             placeWord(word.toUpperCase(), row, col, direction, player[currentPlayer]); // place it
             nextPlayer();
@@ -129,7 +127,6 @@ public class Game {
      */
     public boolean canPlaceWord(String word, int row, int col, char direction, Player player) {
         boolean flag = true;
-        System.out.println("Working1");
         // out of bounds check
         if (direction == 'H') {
             if (word.length() + col > 15) return false;
@@ -144,23 +141,19 @@ public class Game {
 //            return false;
 //        }
 
-        System.out.println("Working2");
         // first see if the word fits on the board
         for (int i = 0; i < word.length(); i++) {
             char currentChar = word.charAt(i);
             Tile boardTile = (direction == 'H') ? board.getTile(row, col + i) : board.getTile(row + i, col);
 
             if (boardTile.getLetter() == ' ') {
-                System.out.println(boardTile.getLetter());
                 continue;
             }
 
             if (boardTile.getLetter() != currentChar) {
-                System.out.println("Char " + currentChar + " board " + boardTile.getLetter());
                 return false;
             }
         }
-        System.out.println("Working3");
         // now second layer check, new formed adjacent words must also be valid
         if (direction == 'H') {
             if (word.length() + col > 15) return false;
@@ -186,7 +179,6 @@ public class Game {
                 }
             }
         }
-        System.out.println("Working4");
         return flag;
     }
 

@@ -103,7 +103,15 @@ public abstract class Controller implements ActionListener {
     }
 
     public void submitButton(ActionEvent e) {
-
+        if(!view.getVertical()){
+            while(model.getBoard().getTile(view.getTargetRow(), view.getTargetCol() + view.getInputWord().length()).getLetter() != ' '){
+                view.addInputWord(model.getBoard().getTile(view.getTargetRow(), view.getTargetCol() + view.getInputWord().length()).getLetter());
+            }
+        }else{
+            while(model.getBoard().getTile(view.getTargetRow() + view.getInputWord().length(), view.getTargetCol()).getLetter() != ' '){
+                view.addInputWord(model.getBoard().getTile(view.getTargetRow() + view.getInputWord().length(), view.getTargetCol()).getLetter());
+            }
+        }
         if (model.play(view.getInputWord().toLowerCase(), view.getDirection(), view.getTargetRow(), view.getTargetCol())){
 
             System.out.println("Input word " + view.getInputWord() +" Row: " + view.getTargetRow() + " Col: " + view.getTargetCol() +" Dir:" + view.getDirection());
@@ -126,7 +134,6 @@ public abstract class Controller implements ActionListener {
         view.setBeforeStart(true);
         view.updateView();
         view.setInputWord("");
-        model.getBoard().displayBoard();
 
     }
     public void skip(ActionEvent e) {
