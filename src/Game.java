@@ -307,4 +307,21 @@ public class Game {
     public View getView(){
         return view;
     }
+
+
+//AI Logic
+public ArrayList<Character> getBoardLetters(){
+    ArrayList<Character> letters = new ArrayList<>();
+
+    for (int row = 0; row < 15; row++) {
+        for (int col = 0; col < 15; col++) {
+            Tile tile = getBoard().getTile(row,col);
+            if (!(tile.getLetter() == ' ')){
+                letters.add(tile.getLetter());
+            }
+        }
+    }
+
+    return letters;
+}
 }

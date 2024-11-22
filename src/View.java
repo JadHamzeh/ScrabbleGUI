@@ -306,6 +306,8 @@ class View {
         }
         frame.revalidate();
         frame.repaint();
+
+        System.out.println(model.getBoardLetters());
     }
 
 
