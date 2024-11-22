@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 public abstract class Controller implements ActionListener {
     private Game model;
     private View view;
+    CustomButton storedButton;
 
 
 
@@ -51,6 +52,7 @@ public abstract class Controller implements ActionListener {
 
     public void handButton (ActionEvent e){
         CustomButton button = (CustomButton) e.getSource();
+        storedButton = (CustomButton) e.getSource();
         button.setEnabled(false);
         view.setSelectedTile(new Tile(button.getText().charAt(0)));// Store the selected tile
         System.out.println(view.getSelectedTile());
@@ -61,6 +63,7 @@ public abstract class Controller implements ActionListener {
             view.updateEnabledTiles();
         }
         view.setBeforeStart(false);
+        view.updateHandPanel();
     }
 
     public void clickedBoard (ActionEvent e) {
@@ -96,7 +99,7 @@ public abstract class Controller implements ActionListener {
             }
             System.out.println("Row: " + view.getTargetRow() + " Col: " + view.getTargetCol() +" Word:" + view.getInputWord());
             view.setSelectedTile(null);
-            view.updateHandPanel();
+            //view.updateHandPanel();
             view.disableButtons();
         }
     }
@@ -110,7 +113,6 @@ public abstract class Controller implements ActionListener {
             JOptionPane.showMessageDialog(view.getFrame(),"submitted word: " + view.getInputWord() + " it is now " + model.getCurrentPlayer().getName() + "'s turn, they have " + model.getCurrentPlayer().getPoints() + " points");
             //replace hand with next players hand
             model.nextPlayer();
-            view.updateHandPanel();
 
         }else{
             JOptionPane.showMessageDialog(view.getFrame(),"tried to submitted word: " + view.getInputWord() +" invalid word please try again");
@@ -125,9 +127,13 @@ public abstract class Controller implements ActionListener {
             view.setDirection('H');
         }
         System.out.println(view.getInputWord());
+
+        view.updateHandPanel();
+
         view.setBeforeStart(true);
         view.updateView();
         view.setInputWord("");
+
     }
     public void skip(ActionEvent e) {
 
