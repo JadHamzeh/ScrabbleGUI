@@ -89,6 +89,9 @@ public class Board {
     }
 
 
+    public Tile[][] getTiles(){
+        return board;
+    }
 
 
 

@@ -90,7 +90,7 @@ public class Player {
 
             if (boardLetter == ' ') {
                 // If the board space is empty, the player must have the corresponding tile
-                requiredTiles.add(wordLetter);
+                requiredTiles.add((Character) wordLetter);
             } else if (boardLetter != wordLetter) {
                 // If there's a mismatch between the word and the board, the word is invalid
                 return false;

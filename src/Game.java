@@ -30,8 +30,8 @@ public class Game {
 
     //current player
 
-    private int currentPlayerIndex = 1;
-    private int currentPlayer = 1;
+    private int currentPlayerIndex = 0;
+    private int currentPlayer = 0;
 
 
     // Constructor
@@ -101,17 +101,20 @@ public class Game {
      * Continuously manages player turns, collects input for word placement,
      * and updates the board until the game ends.
      */
-    public void play(String word, char direction, int row, int col) {
-//        if (!check.isWord(word.toLowerCase()) || word.length() < 2) { // is the word valid in the wordbank
-//            return;
-//        }
-//
-//        if (canPlaceWord(word, row, col, direction, player[currentPlayer])) { // can the word be legally placed
-//            placeWord(word, row, col, direction, player[currentPlayer]); // place it
-//            currentPlayer = (currentPlayer + 1) % 4;
-//        }
-//        currentPlayerIndex = currentPlayer;
-//        view.updateView();
+    public boolean play(String word, char direction, int row, int col) {
+        if (!check.isWord(word.toLowerCase()) || word.length() < 2) { // is the word valid in the wordbank
+            return false;
+        }
+        System.out.println(view.getInputWord().toLowerCase() + view.getDirection() + view.getTargetRow() + view.getTargetCol() );
+        System.out.println(canPlaceWord(word, row, col, direction, player[currentPlayer]));
+        if (canPlaceWord(word.toUpperCase(), row, col, direction, player[currentPlayer])) { // can the word be legally placed
+            placeWord(word.toUpperCase(), row, col, direction, player[currentPlayer]); // place it
+            currentPlayer = (currentPlayer + 1) % 4;
+            return true;
+        }
+        currentPlayerIndex = currentPlayer;
+        view.updateView();
+        return false;
     }
 
     /**
@@ -126,28 +129,38 @@ public class Game {
      */
     public boolean canPlaceWord(String word, int row, int col, char direction, Player player) {
         boolean flag = true;
-
+        System.out.println("Working1");
         // out of bounds check
         if (direction == 'H') {
             if (word.length() + col > 15) return false;
         } else {
             if (word.length() + row > 15) return false;
         }
+//        boolean isVertical;
+//        if(direction == 'H'){
+//            isVertical = false;
+//        } else {isVertical = true;}
+//        if(!player.hasAllTiles(word, board.getTiles(), row, col, isVertical)){
+//            return false;
+//        }
 
+        System.out.println("Working2");
         // first see if the word fits on the board
         for (int i = 0; i < word.length(); i++) {
             char currentChar = word.charAt(i);
             Tile boardTile = (direction == 'H') ? board.getTile(row, col + i) : board.getTile(row + i, col);
 
             if (boardTile.getLetter() == ' ') {
+                System.out.println(boardTile.getLetter());
                 continue;
             }
 
             if (boardTile.getLetter() != currentChar) {
+                System.out.println("Char " + currentChar + " board " + boardTile.getLetter());
                 return false;
             }
         }
-
+        System.out.println("Working3");
         // now second layer check, new formed adjacent words must also be valid
         if (direction == 'H') {
             if (word.length() + col > 15) return false;
@@ -173,6 +186,7 @@ public class Game {
                 }
             }
         }
+        System.out.println("Working4");
         return flag;
     }
 
@@ -247,22 +261,19 @@ public class Game {
      * @param direction The direction of the word: 'H' for horizontal, 'V' for vertical.
      * @param player The player placing the word.
      */
-    public void placeWord(String word, int row, int col, char direction, Player player, int wordLen) {
+    public void placeWord(String word, int row, int col, char direction, Player player) {
         for (int i = 0; i < word.length(); i++) {
             char wordtile = word.charAt(i);
-            //skipsover placed tiles
-            if(direction == 'H') {
-                if (board.getTile(row, col+i-wordLen+1).getLetter() == ' ') {
-                    Tile newTile = player.removeTile(new Tile(wordtile)); // remove from player rack
-                    player.addTile(tilePile.deleteTile()); // take from tilePile (bag)
-                    board.setTile(row, col + i - wordLen + 1, newTile);
+            Tile boardTile = (direction == 'H') ? board.getTile(row, col + i) : board.getTile(row + i, col);
+
+            if (boardTile.getLetter() == ' ') { // If it's an empty space, place the tile (this is checked within canPlaceWord() as well)
+                Tile newTile = player.removeTile(new Tile(wordtile)); // remove from player rack
+                player.addTile(tilePile.deleteTile()); // take from tilePile (bag)
+                if (direction == 'H') {
+                    board.setTile(row, col + i, newTile);
+                } else { // direction == 'V'
+                    board.setTile(row + i, col, newTile);
                 }
-            } else { // direction == 'V'
-                if (board.getTile(row+i-wordLen+1, col).getLetter() == ' ') {
-                    Tile newTile = player.removeTile(new Tile(wordtile)); // remove from player rack
-                    player.addTile(tilePile.deleteTile()); // take from tilePile (bag)
-                    board.setTile(row + i - wordLen + 1, col, newTile);
-            }
             }
         }
         addPoints(word, player);
