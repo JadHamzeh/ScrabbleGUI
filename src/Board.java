@@ -67,7 +67,7 @@ public class Board {
                 board[i][j].setBonus("DL");
             }
         }
-        for(int i = 3; i < 15; i = i+7){
+        for(int i = 3; i < 15; i = i+8){
             for(int j = 0; j < 15; j = j+7){
                 board[i][j].setBonus("DL");
             }
@@ -77,11 +77,17 @@ public class Board {
                 board[i][j].setBonus("DL");
             }
         }
+        for(int i = 2; i < 14; i = i+10){
+            for(int j = 6; j < 9; j = j+2){
+                board[i][j].setBonus("DL");
+            }
+        }
         for(int i = 6; i < 9; i = i+2){
             for(int j = 4; j < 13; j = j+6){
                 board[i][j].setBonus("0");
             }
         }
+
         board[7][7].setBonus("0");
     }
 

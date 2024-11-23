@@ -306,6 +306,7 @@ class View {
                 }else if (tile.getBonus().equals("DL")) {
                     buttons[row][col].setBackground(Color.CYAN);
                 }
+
                 if (tile != null && tile.getLetter() != ' ') {
                     buttons[row][col].setText(String.valueOf(tile.getLetter()));
                 } else {
