@@ -6,15 +6,12 @@ import java.awt.event.*;
 import java.util.Locale;
 class View {
 
-
     private JPanel directionPanel;
     private int targetRow;
     private int targetCol;
     private boolean first_letter = true; // is the current player placing their first tile
 
     private boolean isVertical;
-
-    private CustomButton [] displayHand;
 
     private char direction = 'H';
     private CustomButton[][] buttons;
@@ -39,6 +36,7 @@ class View {
         return selectedTile;
     }
 
+    private CustomButton[] handButtons;
     private JPanel handPanel;
     private Game model;
     private Word check;
@@ -161,10 +159,16 @@ class View {
         this.check = new Word();
         model.initializeTiles();
         model.initializePlayer();
-        displayHand= new CustomButton[7];
         // Initialize hand panel
         handPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         handPanel.setPreferredSize(new Dimension(700, 50));
+        handButtons = new CustomButton[7];
+        for (int i = 0; i < 7; i++) {
+            CustomButton tileButton = new CustomButton(String.valueOf(model.getCurrentPlayer().getHand().get(i).getLetter()));
+            handButtons[i] = tileButton;
+            handPanel.add(handButtons[i]);
+        }
+
         updateHandPanel();
 
         // Initialize the direction buttons
@@ -187,17 +191,12 @@ class View {
 
                 clickedRow = buttons[row][col].getRow();
 
-                // Add the ActionListener directly to each button
+
                 clickedRow = row; // Since 'row' is accessible in this scope
                 clickedCol = col; // Since 'col' is accessible in this scope
 
             }
         }
-
-        handPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        handPanel.setPreferredSize(new Dimension(700, 50));
-        updateHandPanel();
-
         //Answer button
         JPanel answer = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         answer.setPreferredSize(new Dimension(100,100));
@@ -237,27 +236,9 @@ class View {
      * Updates the hand panel with the current player's tiles.
      */
     public void updateHandPanel() {
-        handPanel.removeAll();
-
         // Add buttons for each tile in the current player's hand
-        for (Tile tile : model.getCurrentPlayer().getHand()) {
-            CustomButton tileButton = new CustomButton(String.valueOf(tile.getLetter()));
-
-            // Inline event listener for selecting a tile
-            tileButton.addActionListener(e -> {
-                tileButton.setEnabled(false); // Disable the selected tile
-                selectedTile = new Tile(tileButton.getText().charAt(0)); // Store the selected tile
-
-                if (beforeStart) {
-                    enableButtons(); // Allow board placement
-                } else {
-                    disableButtons();
-                    updateEnabledTiles();
-                }
-
-                beforeStart = false; // Placement has started
-            });
-            handPanel.add(tileButton); // Add the button to the panel
+        for (int i = 0; i < 7; i++) {
+            handButtons[i].setText(Character.toString(model.getCurrentPlayer().getHand().get(i).getLetter()));
         }
         handPanel.revalidate();
         handPanel.repaint();
@@ -343,7 +324,9 @@ class View {
 
     }
 
-    public CustomButton getDisplayHandTile(int i) {
-        return displayHand[i];
+
+
+    public CustomButton[] getHandButtons(){
+        return handButtons;
     }
 }

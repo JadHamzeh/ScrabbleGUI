@@ -44,7 +44,12 @@ public class Game {
         this.tilePile = new TilePile();
         this.initializeTiles();
         this.initializePlayer();
-        this.board = new Board(tilePile.deleteTile());
+        Tile temp = tilePile.deleteTile();
+        while(temp.getLetter() == '*'){ // make sure centre tile isnt blank tile
+            tilePile.addTile('*', 1);
+            temp = tilePile.deleteTile();
+        }
+        this.board = new Board(temp);
         this.check = new Word();
         this.view = new View(this);
     }
@@ -82,6 +87,7 @@ public class Game {
         this.tilePile.addTile('X', 1);
         this.tilePile.addTile('Y', 2);
         this.tilePile.addTile('Z', 1);
+        this.tilePile.addTile('*', 2); // BLANKS HERE. increase to test
         Collections.shuffle(tilePile.getPile());
     }
 

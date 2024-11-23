@@ -42,7 +42,7 @@ public class Tile {
             case 'k' -> 5;
             case 'j', 'x' -> 8;
             case 'q', 'z' -> 10;
-            default -> 0; // In case of an invalid or blank ' ' character
+            default -> 0; // In case of an invalid or blank '*' character
         };
     }
 
@@ -66,6 +66,10 @@ public class Tile {
 
     public String getBonus(){
         return this.bonus;
+    }
+
+    public void setPoints(int points){
+        this.points = points;
     }
 
     public void setBonus(String bonus){

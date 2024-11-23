@@ -1,12 +1,13 @@
 package src;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public abstract class Controller implements ActionListener {
-    private Game model;
-    private View view;
+    private static Game model;
+    private static View view;
     CustomButton storedButton;
 
     public Controller() {
@@ -23,9 +24,8 @@ public abstract class Controller implements ActionListener {
         }
         view.getSubmit().addActionListener(this::submitButton);
         view.getSkip().addActionListener(this::skip);
-        for (Tile tile: model.getCurrentPlayer().getHand()) {
-            CustomButton tileButton = new CustomButton(String.valueOf(tile.getLetter()));
-            tileButton.addActionListener(this::handButton);
+        for (int i = 0; i < 7; i++) {
+            view.getHandButtons()[i].addActionListener(this::handButton);
         }
         view.getHandPanel().revalidate();
         view.getHandPanel().repaint();
@@ -53,6 +53,11 @@ public abstract class Controller implements ActionListener {
         storedButton = (CustomButton) e.getSource();
         button.setEnabled(false);
         view.setSelectedTile(new Tile(button.getText().charAt(0)));// Store the selected tile
+        System.out.println("Work please");
+        if(view.getSelectedTile().getLetter() == '*'){
+            blankSelector();
+            return;
+        }
         if (view.getBeforeStart()) {
             view.enableButtons();
         } else {
@@ -147,7 +152,45 @@ public abstract class Controller implements ActionListener {
         view.updateHandPanel();
         view.updateView();
     }
+    public static void blankSelector() {
+        // create the temporary frame
+        JFrame frame = new JFrame("Which letter would you like?");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 300);
 
+        // panel to hold the letter selection buttons
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(5, 6, 10, 10)); // 5 rows x 6 columns with gaps
+
+        // Create an ActionListener to handle button clicks
+        ActionListener buttonClickListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JButton source = (JButton) e.getSource(); // get the clicked button
+                String letter = source.getText();         // get the button text
+                model.getCurrentPlayer().removeTile(new Tile('*')); // remove the blank
+                Tile temp = new Tile(letter.charAt(0)); // add the new tile
+                temp.setPoints(0); // blank tiles are still worth 0
+                model.getCurrentPlayer().addTile(temp);
+                view.updateHandPanel();
+                frame.dispose();
+            }
+        };
+
+        // create buttons A-Z and add them to the temporary panel
+        for (char letter = 'A'; letter <= 'Z'; letter++) {
+            JButton letterButton = new JButton(String.valueOf(letter));
+            letterButton.addActionListener(buttonClickListener); // use the above listener
+            buttonPanel.add(letterButton); // add to temp panel
+        }
+
+        // add the panel to the frame
+        frame.add(buttonPanel);
+
+        // display the frame
+        frame.setLocationRelativeTo(null); // center on screen
+        frame.setVisible(true);
+    }
 
     public static void main(String[] args) {
         Controller controller = new Controller() {
