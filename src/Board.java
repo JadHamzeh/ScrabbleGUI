@@ -25,6 +25,64 @@ public class Board {
             }
         }
         board[7][7] = tile; // Place the specified tile at the center
+
+        // triple word bonuses
+        for(int i = 0; i < 15; i = i+7){
+            for(int j = 0; j < 15; j = j+7){
+                board[i][j].setBonus("TW");
+            }
+        }
+
+        // triple letter
+        for(int i = 1; i < 15; i = i+4){
+            for(int j = 1; j < 15; j = j+4){
+                board[i][j].setBonus("TL");
+            }
+        }
+        for(int i = 1; i < 15; i = i+12){
+            for(int j = 1; j < 15; j = j+12){
+                board[i][j].setBonus("0");
+            }
+        }
+
+        // double word
+        int x = 1;
+        for(int i = 1; i < 14; i ++){
+                if(board[i][x].getBonus().equals("0")){
+                    board[i][x].setBonus("DW");
+                }
+                x++;
+        }
+        x = 13;
+        for(int i = 1; i < 14; i++){
+            if(board[i][x].getBonus().equals("0")){
+                board[i][x].setBonus("DW");
+            }
+            x--;
+        }
+
+        //double letter
+        for(int i = 0; i < 15; i = i+7){
+            for(int j = 3; j < 15; j = j+8){
+                board[i][j].setBonus("DL");
+            }
+        }
+        for(int i = 3; i < 15; i = i+7){
+            for(int j = 0; j < 15; j = j+7){
+                board[i][j].setBonus("DL");
+            }
+        }
+        for(int i = 6; i < 9; i = i+2){
+            for(int j = 2; j < 13; j = j+2){
+                board[i][j].setBonus("DL");
+            }
+        }
+        for(int i = 6; i < 9; i = i+2){
+            for(int j = 4; j < 13; j = j+6){
+                board[i][j].setBonus("0");
+            }
+        }
+        board[7][7].setBonus("0");
     }
 
     /**

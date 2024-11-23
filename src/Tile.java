@@ -8,7 +8,7 @@ public class Tile {
 
     // Attributes
     char letter; // The letter printed on the tile (e.g., 'a', 'e', 'x').
-
+    String bonus;
     // The point value assigned to the tile based on Scrabble rules.
     int points;
 
@@ -23,10 +23,10 @@ public class Tile {
     public Tile(char letter){
         this.letter = letter;
         this.points = assignValue(letter);
+        this.bonus = "0";
     }
 
     // Methods
-
     /**
      * Assigns a point value to a given letter
      *
@@ -62,5 +62,13 @@ public class Tile {
      */
     public int getPoints() {
         return points;
+    }
+
+    public String getBonus(){
+        return this.bonus;
+    }
+
+    public void setBonus(String bonus){
+        this.bonus = bonus;
     }
 }

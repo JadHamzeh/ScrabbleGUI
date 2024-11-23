@@ -297,6 +297,15 @@ class View {
         for (int row = 0; row < 15; row++) {
             for (int col = 0; col < 15; col++) {
                 Tile tile = model.getBoard().getTile(row, col);
+                if(tile.getBonus().equals("TW")) {
+                    buttons[row][col].setBackground(Color.RED);
+                } else if (tile.getBonus().equals("TL")) {
+                    buttons[row][col].setBackground(Color.BLUE);
+                }else if (tile.getBonus().equals("DW")) {
+                    buttons[row][col].setBackground(Color.PINK);
+                }else if (tile.getBonus().equals("DL")) {
+                    buttons[row][col].setBackground(Color.CYAN);
+                }
                 if (tile != null && tile.getLetter() != ' ') {
                     buttons[row][col].setText(String.valueOf(tile.getLetter()));
                 } else {

@@ -128,7 +128,7 @@ public abstract class Controller implements ActionListener {
         }
 
         view.updateHandPanel();
-
+        view.setFirstLetter(true);
         view.setBeforeStart(true);
         view.updateView();
         view.setInputWord("");

@@ -350,30 +350,30 @@ public class Game {
         return words;
     }
 
-    public String maxPoints(ArrayList<String> wordList){
-        String maxPointWord = "";
-        int maxPoint = 0;
-        ArrayList<Tile> tempTiles = new ArrayList<Tile>();
-        //logic
-        for (String word: wordList){
-            int tempPoint = 0;
-            for (Character letter: word){
-                tempTiles.add(new Tile(letter));
-            }
-
-            for(Tile tile: tempTiles){
-                tempPoint += tile.getPoints();
-            }
-            if (tempPoint>maxPoint){
-                maxPoint = tempPoint;
-                maxPointWord = word;
-            }
-
-            tempTiles.removeAll(String);
-        }
-
-        return maxPointWord;
-    }
+//    public String maxPoints(ArrayList<String> wordList){
+//        String maxPointWord = "";
+//        int maxPoint = 0;
+//        ArrayList<Tile> tempTiles = new ArrayList<Tile>();
+//        //logic
+//        for (String word: wordList){
+//            int tempPoint = 0;
+//            for (Character letter: word){
+//                tempTiles.add(new Tile(letter));
+//            }
+//
+//            for(Tile tile: tempTiles){
+//                tempPoint += tile.getPoints();
+//            }
+//            if (tempPoint>maxPoint){
+//                maxPoint = tempPoint;
+//                maxPointWord = word;
+//            }
+//
+//            tempTiles.removeAll(String);
+//        }
+//
+//        return maxPointWord;
+//    }
 
 
 }
