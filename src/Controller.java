@@ -53,7 +53,6 @@ public abstract class Controller implements ActionListener {
         storedButton = (CustomButton) e.getSource();
         button.setEnabled(false);
         view.setSelectedTile(new Tile(button.getText().charAt(0)));// Store the selected tile
-        System.out.println("Work please");
         if(view.getSelectedTile().getLetter() == '*'){
             blankSelector();
             return;

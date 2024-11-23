@@ -239,6 +239,7 @@ class View {
         // Add buttons for each tile in the current player's hand
         for (int i = 0; i < 7; i++) {
             handButtons[i].setText(Character.toString(model.getCurrentPlayer().getHand().get(i).getLetter()));
+            handButtons[i].setEnabled(true);
         }
         handPanel.revalidate();
         handPanel.repaint();
