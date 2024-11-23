@@ -140,16 +140,16 @@ public abstract class Controller implements ActionListener {
     }
     public void skip(ActionEvent e) {
 
-        JOptionPane.showMessageDialog(view.getFrame(),"skipping turn, it is now " + model.getCurrentPlayer().getName() + "'s turn, they have " + model.getCurrentPlayer().getPoints() + " points");
+        model.nextPlayer();
         //replace hand with next players hand
         view.updateHandPanel();
         view.setBeforeStart(true);
         view.setInputWord("");
         view.getHorizontalButton().setEnabled(true);
         view.getVerticalButton().setEnabled(true);
-        model.nextPlayer();
         view.updateHandPanel();
         view.updateView();
+        JOptionPane.showMessageDialog(view.getFrame(),"Skipping turn, it is now " + model.getCurrentPlayer().getName() + "'s turn, they have " + model.getCurrentPlayer().getPoints() + " points");
     }
     public static void blankSelector() {
         // create the temporary frame
