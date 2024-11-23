@@ -347,13 +347,36 @@ public class Game {
         return words;
     }
 
-    public ArrayList<String> findWords(Character boardLetter, ArrayList<Character> handLetters){
+    public ArrayList<String> findWords(Character boardLetter, ArrayList<Character> handLetters) {
         ArrayList<String> words = new ArrayList<>();
+        ArrayList<Character> allLetters = new ArrayList<>(handLetters);
+        allLetters.add(boardLetter); // Include the board letter
 
-        //check for combinations here
-
+        // Generate combinations for word lengths 2-5
+        for (int wordLength = 2; wordLength <= 5; wordLength++) {
+            generateCombinations(allLetters, "", wordLength, words);
+        }
 
         return words;
+    }
+
+    private void generateCombinations(ArrayList<Character> letters, String currentWord, int remainingLength, ArrayList<String> words) {
+        if (remainingLength == 0) {
+            // Base case: Word is complete
+            if (check.isWord(currentWord.toLowerCase())) {
+                words.add(currentWord.toUpperCase());
+            }
+            return;
+        }
+
+        // Recursive case: Try adding each letter
+        for (int i = 0; i < letters.size(); i++) {
+            char chosenLetter = letters.get(i);
+            ArrayList<Character> remainingLetters = new ArrayList<>(letters);
+            remainingLetters.remove(i); // Avoid reusing the same letter
+
+            generateCombinations(remainingLetters, currentWord + chosenLetter, remainingLength - 1, words);
+        }
     }
 
 //    public String maxPoints(ArrayList<String> wordList){

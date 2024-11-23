@@ -300,6 +300,7 @@ class View {
         frame.repaint();
 
         System.out.println(model.getBoardLetters());
+        System.out.println(model.getWords());
     }
 
 
