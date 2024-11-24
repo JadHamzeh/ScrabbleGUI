@@ -248,9 +248,9 @@ class View {
         handPanel.repaint();
     }
 
-    public void refreshHandPanel(){
+    public void refreshHandPanel(Boolean bool){
         for (int i = 0; i < 7; i++) {
-            handButtons[i].setEnabled(true);
+            handButtons[i].setEnabled(bool);
         }
     }
 
@@ -323,8 +323,10 @@ class View {
             for (int col = 0; col < 15; col++) {
                 buttons[row][col].setEnabled(true);
             }
+            buttons[7][7].setEnabled(false);
         }
     }
+
     /**
      * Disables all buttons on the board after a tile is placed.
      */

@@ -30,6 +30,7 @@ public abstract class Controller implements ActionListener {
         view.getHandPanel().revalidate();
         view.getHandPanel().repaint();
         view.initializeScoreboard(model.player);
+        view.refreshHandPanel(false);
     }
 
 
@@ -40,6 +41,7 @@ public abstract class Controller implements ActionListener {
         view.getHorizontalButton().setEnabled(false); // Disable horizontal as well
         view.setDirection('V');
         view.updateEnabledTiles();
+        view.refreshHandPanel(true);
     }
     private void horizontalButton() {
         view.setVertical(false);
@@ -47,12 +49,12 @@ public abstract class Controller implements ActionListener {
         view.getHorizontalButton().setEnabled(false); // Disable vertical as well
         view.setDirection('H');
         view.updateEnabledTiles();
+        view.refreshHandPanel(true);
     }
 
     public void handButton (ActionEvent e){
         CustomButton button = (CustomButton) e.getSource();
         storedButton = (CustomButton) e.getSource();
-        button.setEnabled(false);
         view.setSelectedTile(new Tile(button.getText().charAt(0)));// Store the selected tile
         if(view.getSelectedTile().getLetter() == '*'){
             blankSelector();
@@ -61,7 +63,7 @@ public abstract class Controller implements ActionListener {
         if (view.getBeforeStart()) {
             view.enableButtons();
         } else {
-            view.disableButtons();
+            //view.disableButtons();
             view.updateEnabledTiles();
         }
         view.setBeforeStart(false);
@@ -102,6 +104,7 @@ public abstract class Controller implements ActionListener {
             view.setSelectedTile(null);
             //view.updateHandPanel();
             view.disableButtons();
+            storedButton.setEnabled(false);
         }
     }
 
@@ -121,7 +124,8 @@ public abstract class Controller implements ActionListener {
             JOptionPane.showMessageDialog(view.getFrame(),"submitted word: " + view.getInputWord() + " it is now " + model.getCurrentPlayer().getName() + "'s turn, they have " + model.getCurrentPlayer().getPoints() + " points");
 
         }else{
-            JOptionPane.showMessageDialog(view.getFrame(),"tried to submitted word: " + view.getInputWord() +" invalid word please try again");
+            JOptionPane.showMessageDialog(view.getFrame(),"tried to submit word: " + view.getInputWord() +" invalid word please try again");
+            view.refreshHandPanel(false);
         }
 
         view.getHorizontalButton().setEnabled(true);
@@ -138,8 +142,7 @@ public abstract class Controller implements ActionListener {
         view.updateView();
         view.setInputWord("");
         view.updateScoreboard(model.player);
-        view.refreshHandPanel();
-
+        view.refreshHandPanel(false);
     }
     public void skip(ActionEvent e) {
 
@@ -154,6 +157,7 @@ public abstract class Controller implements ActionListener {
         view.updateView();
         view.updateScoreboard(model.player);
         JOptionPane.showMessageDialog(view.getFrame(),"Skipping turn, it is now " + model.getCurrentPlayer().getName() + "'s turn, they have " + model.getCurrentPlayer().getPoints() + " points");
+        view.refreshHandPanel(false);
     }
     public static void blankSelector() {
         // create the temporary frame
