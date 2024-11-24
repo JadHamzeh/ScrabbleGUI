@@ -168,6 +168,6 @@ public class GameTest {
         player.addTile(new Tile('D'));
         player.setPoints(0);
         game.placeWord("HOLD", 5, 11, 'V', player);
-        assertFalse(16== player.getPoints(), "Score for 'HOLD' + 'HELLO' should be 8+8 points");
-    } // here we fail because we are not counting the new word "HELLO" as our own
+        assertTrue(16 == player.getPoints(), "Score for 'HOLD' + 'HELLO' should be 8+8 points");
+    }
 }

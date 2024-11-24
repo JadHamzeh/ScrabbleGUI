@@ -207,7 +207,7 @@ class View {
 
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        frame.setPreferredSize(new Dimension(900,500));
         submit = new JButton("Submit");
         skipPannel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         skipPannel.setPreferredSize(new Dimension(100,100));
@@ -351,7 +351,7 @@ class View {
             scoreboardPanel.add(playerScores[i]);
         }
 
-        frame.add(scoreboardPanel, BorderLayout.EAST);
+        frame.add(scoreboardPanel, BorderLayout.SOUTH);
         frame.revalidate();
     }
 
