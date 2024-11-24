@@ -39,13 +39,13 @@ public class Game {
     /**
      * Initializes the game components, including the players, tile pile, board, and word validator.
      */
-    public Game(){
+    public Game() {
         this.player = new Player[4];
         this.tilePile = new TilePile();
         this.initializeTiles();
         this.initializePlayer();
         Tile temp = tilePile.deleteTile();
-        while(temp.getLetter() == '*'){ // make sure centre tile isnt blank tile
+        while (temp.getLetter() == '*') { // make sure centre tile isnt blank tile
             tilePile.addTile('*', 1);
             temp = tilePile.deleteTile();
         }
@@ -60,7 +60,7 @@ public class Game {
      * Initializes the tile pile with the correct quantity of each letter tile.
      * Shuffles the tiles to randomize their order.
      */
-    public void initializeTiles(){
+    public void initializeTiles() {
         this.tilePile.addTile('A', 9);
         this.tilePile.addTile('B', 2);
         this.tilePile.addTile('C', 2);
@@ -94,7 +94,7 @@ public class Game {
     /**
      * Initializes the players and gives each of them 7 tiles from the tile pile.
      */
-    public void initializePlayer(){
+    public void initializePlayer() {
         for (int i = 0; i < 4; i++) {
             player[i] = new Player(i);
             for (int j = 0; j < 7; j++) {
@@ -124,11 +124,11 @@ public class Game {
     /**
      * Checks if the word can be legally placed on the board at the specified position.
      *
-     * @param word The word to be placed.
-     * @param row The starting row index for the word (0-14).
-     * @param col The starting column index for the word (0-14).
+     * @param word      The word to be placed.
+     * @param row       The starting row index for the word (0-14).
+     * @param col       The starting column index for the word (0-14).
      * @param direction The direction of the word: 'H' for horizontal, 'V' for vertical.
-     * @param player The player attempting to place the word.
+     * @param player    The player attempting to place the word.
      * @return true if the word can be legally placed, false otherwise.
      */
     public boolean canPlaceWord(String word, int row, int col, char direction, Player player) {
@@ -172,8 +172,7 @@ public class Game {
                     }
                 }
             }
-        }
-        else {
+        } else {
             if (word.length() + row > 15) return false;
             flag &= verticalAdjacencyCheck(word, row, col); // does the word extend other letters?
 
@@ -192,8 +191,8 @@ public class Game {
      * Checks if placing a word horizontally forms a valid word with adjacent tiles.
      *
      * @param word The word being placed.
-     * @param row The starting row of the word.
-     * @param col The starting column of the word.
+     * @param row  The starting row of the word.
+     * @param col  The starting column of the word.
      * @return true if the word forms valid horizontal adjacent words, false otherwise.
      */
     public boolean horizontalAdjacencyCheck(String word, int row, int col) {
@@ -223,8 +222,8 @@ public class Game {
      * Checks if placing a word vertically forms a valid word with adjacent tiles.
      *
      * @param word The word being placed.
-     * @param row The starting row of the word.
-     * @param col The starting column of the word.
+     * @param row  The starting row of the word.
+     * @param col  The starting column of the word.
      * @return true if the word forms valid vertical adjacent words, false otherwise.
      */
     public boolean verticalAdjacencyCheck(String word, int row, int col) {
@@ -253,11 +252,11 @@ public class Game {
     /**
      * Places a word on the board at the specified position and updates the player's hand.
      *
-     * @param word The word to be placed on the board.
-     * @param row The starting row index for the word (0-14).
-     * @param col The starting column index for the word (0-14).
+     * @param word      The word to be placed on the board.
+     * @param row       The starting row index for the word (0-14).
+     * @param col       The starting column index for the word (0-14).
      * @param direction The direction of the word: 'H' for horizontal, 'V' for vertical.
-     * @param player The player placing the word.
+     * @param player    The player placing the word.
      */
     public void placeWord(String word, int row, int col, char direction, Player player) {
         for (int i = 0; i < word.length(); i++) {
@@ -269,31 +268,37 @@ public class Game {
                 player.addTile(tilePile.deleteTile()); // take from tilePile (bag)
                 if (direction == 'H') {
                     board.setTile(row, col + i, newTile);
+                    String temp = buildWord(row, col + i, 'V', Character.toString(board.getTile(row, col + i).getLetter()));
+                    if (temp.length() > 1) {
+                        addPoints(temp, player);
+                    }
                 } else { // direction == 'V'
                     board.setTile(row + i, col, newTile);
+                    String temp = buildWord(row+i, col, 'H', Character.toString(board.getTile(row+i, col).getLetter()));
+                    if (temp.length() > 1) {
+                        addPoints(temp, player);
+                    }
                 }
             }
         }
-        addPoints(word, player);
+        addPoints(word, player); // add points for original word
     }
-
-
 
 
     /**
      * Adds points to the player's total score based on the word placed on the board.
      *
-     * @param word The word that was placed on the board.
+     * @param word   The word that was placed on the board.
      * @param player The player who placed the word and earned the points.
      */
-    public void addPoints(String word, Player player){
-        for (char letter : word.toCharArray()){
+    public void addPoints(String word, Player player) {
+        for (char letter : word.toCharArray()) {
             Tile tile = new Tile(letter);
             player.addPoints(tile.getPoints());
         }
     }
 
-    public void  nextPlayer(){
+    public void nextPlayer() {
         currentPlayer = (currentPlayer + 1) % 4;
         currentPlayerIndex = currentPlayer;
     }
@@ -306,23 +311,23 @@ public class Game {
         return this.board;
     }
 
-    public Word getCheck(){
+    public Word getCheck() {
         return check;
     }
 
-    public View getView(){
+    public View getView() {
         return view;
     }
 
 
     //AI Logic
-    public ArrayList<Character> getBoardLetters(){
+    public ArrayList<Character> getBoardLetters() {
         ArrayList<Character> letters = new ArrayList<>();
 
         for (int row = 0; row < 15; row++) {
             for (int col = 0; col < 15; col++) {
-                Tile tile = getBoard().getTile(row,col);
-                if (!(tile.getLetter() == ' ')){
+                Tile tile = getBoard().getTile(row, col);
+                if (!(tile.getLetter() == ' ')) {
                     letters.add(tile.getLetter());
                 }
             }
@@ -331,16 +336,16 @@ public class Game {
     }
 
 
-    public ArrayList<String> getWords(){
+    public ArrayList<String> getWords() {
         ArrayList<Character> boardLetters = getBoardLetters();
-        ArrayList<Character> handLetters =  new ArrayList<Character>();
+        ArrayList<Character> handLetters = new ArrayList<Character>();
         ArrayList<String> words = new ArrayList<>();
 
         for (Tile tile : getCurrentPlayer().getHand()) {
             Character tileButton = (tile.getLetter());
             handLetters.add(tileButton);
         }
-        for(Character boardLetter: boardLetters){
+        for (Character boardLetter : boardLetters) {
             words.addAll(findWords(boardLetter, handLetters));
         }
 
@@ -398,5 +403,47 @@ public class Game {
         return wordList;
     }
 
+    public String buildWord(int row, int col, char direction, String word) {
+        if (direction == 'H') {
+            StringBuilder adjacent = new StringBuilder();
+            int startCol = col;
 
+            while (startCol > 0 && board.getTile(row, startCol - 1).getLetter() != ' ') { // find starting letter index within row
+                startCol--;
+            }
+
+            for (int i = startCol; i < col; i++) {
+                adjacent.append(board.getTile(row, i).getLetter()); // add extension left of new letter(s), if present
+            }
+
+            adjacent.append(word); // add newly placed letter(s)
+
+            for (int i = col + word.length(); i < 15; i++) {
+                if (board.getTile(row, i).getLetter() == ' ') break;
+                adjacent.append(board.getTile(row, i).getLetter()); // add letters to the right of new letter(s), if present
+            }
+            return adjacent.toString().toLowerCase(); // check valid word, (single character words are valid)
+
+        } else {
+            StringBuilder adjacent = new StringBuilder();
+            int startRow = row;
+
+            while (startRow > 0 && board.getTile(startRow - 1, col).getLetter() != ' ') { // find starting letter index within col
+                startRow--;
+            }
+
+            for (int i = startRow; i < row; i++) {
+                adjacent.append(board.getTile(i, col).getLetter()); // add extension above new word, if present
+            }
+
+            adjacent.append(word); // add newly placed letter(s)
+
+            for (int i = row + word.length(); i < 15; i++) {
+                if (board.getTile(i, col).getLetter() == ' ') break;
+                adjacent.append(board.getTile(i, col).getLetter()); // add letters below the new letter(s), if present
+            }
+
+            return adjacent.toString().toLowerCase();
+        }
     }
+}
