@@ -3,8 +3,15 @@ package src;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.awt.Point;
 import java.util.Locale;
 class View {
+
+
+    private List<Point> tilesPlacedThisTurn = new ArrayList<>();
+
 
     private JPanel directionPanel;
     private int targetRow;
@@ -321,9 +328,11 @@ class View {
     public void enableButtons() {
         for (int row = 0; row < 15; row++) {
             for (int col = 0; col < 15; col++) {
-                buttons[row][col].setEnabled(true);
+                Tile tile = model.getBoard().getTile(row, col);
+                if (!(tile != null && tile.getLetter() != ' ')){
+                    buttons[row][col].setEnabled(true);
+                }
             }
-            buttons[7][7].setEnabled(false);
         }
     }
 
@@ -370,6 +379,23 @@ class View {
         scoreboardPanel.revalidate();
         scoreboardPanel.repaint();
     }
+
+
+    public void addTilePlacedThisTurn(int row, int col) {
+        tilesPlacedThisTurn.add(new Point(row, col));
+    }
+
+    public void clearTilesPlacedThisTurn() {
+        tilesPlacedThisTurn.clear();
+    }
+
+
+
+    public List<Point> getTilesPlacedThisTurn() {
+        return tilesPlacedThisTurn;
+    }
+
+
 
 
     public CustomButton[] getHandButtons(){

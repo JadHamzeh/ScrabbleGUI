@@ -73,10 +73,13 @@ public abstract class Controller implements ActionListener {
     public void clickedBoard (ActionEvent e) {
         CustomButton clickedButton = (CustomButton) e.getSource();
         CustomButton[][] button = view.getButtons();
+        int row = clickedButton.getRow();
+        int col = clickedButton.getCol();
         if (view.getSelectedTile() != null) {
             view.setClickedRow(clickedButton.getRow());
             view.setClickedCol(clickedButton.getCol());
             button[view.getClickedRow()][view.getClickedCol()].setText(String.valueOf(view.getSelectedTile().getLetter()));
+            view.addTilePlacedThisTurn(row,col);
             if (view.getFirstLetter()) { // if this is the first letter added
                 view.setTargetRow(clickedButton.getRow());
                 view.setTargetCol(clickedButton.getCol());
@@ -87,6 +90,7 @@ public abstract class Controller implements ActionListener {
                         view.setInputWord(model.getBoard().getTile(view.getTargetRow(), view.getTargetCol()).getLetter() + temp);
                     }else {
                         view.addInputWord(view.getSelectedTile().getLetter());
+
                     }
                 } else {
                     if (model.getBoard().getTile(view.getTargetRow(), view.getTargetCol() - 1).getLetter() != ' ') {
@@ -109,6 +113,23 @@ public abstract class Controller implements ActionListener {
     }
 
     public void submitButton(ActionEvent e) {
+
+        boolean isTouchingExistingLetter = false;
+
+        // Check adjacency for each newly placed tile
+        for (Point p : view.getTilesPlacedThisTurn()) {
+            int row = p.x;
+            int col = p.y;
+
+            // Check adjacent tiles
+            if ((row > 0 && model.getBoard().getTile(row - 1, col).getLetter() != ' ') || // Above
+                    (row < 14 && model.getBoard().getTile(row + 1, col).getLetter() != ' ') || // Below
+                    (col > 0 && model.getBoard().getTile(row, col - 1).getLetter() != ' ') || // Left
+                    (col < 14 && model.getBoard().getTile(row, col + 1).getLetter() != ' ')) { // Right
+                isTouchingExistingLetter = true;
+                break;
+            }
+        }
         if(!view.getVertical()){
             while(model.getBoard().getTile(view.getTargetRow(), view.getTargetCol() + view.getInputWord().length()).getLetter() != ' '){
                 view.addInputWord(model.getBoard().getTile(view.getTargetRow(), view.getTargetCol() + view.getInputWord().length()).getLetter());
@@ -118,15 +139,23 @@ public abstract class Controller implements ActionListener {
                 view.addInputWord(model.getBoard().getTile(view.getTargetRow() + view.getInputWord().length(), view.getTargetCol()).getLetter());
             }
         }
-        if (model.play(view.getInputWord().toLowerCase(), view.getDirection(), view.getTargetRow(), view.getTargetCol())){
+        if(isTouchingExistingLetter){
+            if (model.play(view.getInputWord().toLowerCase(), view.getDirection(), view.getTargetRow(), view.getTargetCol())){
 
-            System.out.println("Input word " + view.getInputWord() +" Row: " + view.getTargetRow() + " Col: " + view.getTargetCol() +" Dir:" + view.getDirection());
-            JOptionPane.showMessageDialog(view.getFrame(),"submitted word: " + view.getInputWord() + " it is now " + model.getCurrentPlayer().getName() + "'s turn, they have " + model.getCurrentPlayer().getPoints() + " points");
+                System.out.println("Input word " + view.getInputWord() +" Row: " + view.getTargetRow() + " Col: " + view.getTargetCol() +" Dir:" + view.getDirection());
+                JOptionPane.showMessageDialog(view.getFrame(),"submitted word: " + view.getInputWord() + " it is now " + model.getCurrentPlayer().getName() + "'s turn, they have " + model.getCurrentPlayer().getPoints() + " points");
 
+            }else{
+                JOptionPane.showMessageDialog(view.getFrame(),"tried to submit word: " + view.getInputWord() +" invalid word please try again");
+                view.refreshHandPanel(false);
+            }
         }else{
-            JOptionPane.showMessageDialog(view.getFrame(),"tried to submit word: " + view.getInputWord() +" invalid word please try again");
+            JOptionPane.showMessageDialog(view.getFrame(), "Word must touch an existing letter on the board!");
             view.refreshHandPanel(false);
+
         }
+
+
 
         view.getHorizontalButton().setEnabled(true);
         view.getVerticalButton().setEnabled(true);
