@@ -330,7 +330,7 @@ class View {
     }
 
     /**
-     * Initializes the scoreboard panel to display the scores of all players.
+     * Initializes the board panel to display the scores of all players.
      *
      * @param players an array of Player objects representing all players in game
      */
