@@ -49,7 +49,7 @@ public class GameTest {
         counter++;
         System.out.println("The number of tests: " + counter);
         player.clearHand();
-//        game.board.displayBoard(); // debug or test visualization
+        game.getBoard().displayBoard(); // debug or test visualization
 
     }
 
@@ -168,6 +168,6 @@ public class GameTest {
         player.addTile(new Tile('D'));
         player.setPoints(0);
         game.placeWord("HOLD", 5, 11, 'V', player);
-        assertTrue(16 == player.getPoints(), "Score for 'HOLD' + 'HELLO' should be 8+8 points");
+        assertTrue(18 == player.getPoints(), "Score for 'HOLD' + 'HELLO' should be 8+8 points");
     }
 }

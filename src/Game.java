@@ -270,18 +270,26 @@ public class Game {
                     board.setTile(row, col + i, newTile);
                     String temp = buildWord(row, col + i, 'V', Character.toString(board.getTile(row, col + i).getLetter()));
                     if (temp.length() > 1) {
-                        addPoints(temp, player);
+                        int start = row;
+                        while (start > 0 && board.getTile(start -1, col + i).getLetter() != ' ') { // find starting letter index within col
+                            start--;
+                        }
+                        addPoints(temp, player, start, col + i, 'V');
                     }
                 } else { // direction == 'V'
                     board.setTile(row + i, col, newTile);
                     String temp = buildWord(row+i, col, 'H', Character.toString(board.getTile(row+i, col).getLetter()));
                     if (temp.length() > 1) {
-                        addPoints(temp, player);
+                        int start = col;
+                        while (start > 0 && board.getTile(start +i, col - 1).getLetter() != ' ') { // find starting letter index within col
+                            start--;
+                        }
+                        addPoints(temp, player, row + i, start, 'H');
                     }
                 }
             }
         }
-        addPoints(word, player); // add points for original word
+        addPoints(word, player, row, col, direction); // add points for original word
     }
 
 
@@ -291,10 +299,42 @@ public class Game {
      * @param word   The word that was placed on the board.
      * @param player The player who placed the word and earned the points.
      */
-    public void addPoints(String word, Player player) {
-        for (char letter : word.toCharArray()) {
-            Tile tile = new Tile(letter);
-            player.addPoints(tile.getPoints());
+    public void addPoints(String word, Player player, int row, int col, char direction) {
+        int total = 0;
+        int multiplier = 1;
+        if (direction == 'V') {
+            for (int i = 0; i < word.length(); i++) {
+                if (board.getTile(row + i, col).getBonus().equals("TW")) {
+                    total += board.getTile(row + i, col).getPoints();
+                    multiplier *= 3;
+                } else if (board.getTile(row + i, col).getBonus().equals("DW")) {
+                    total += board.getTile(row + i, col).getPoints();
+                    multiplier *= 2;
+                } else if (board.getTile(row + i, col).getBonus().equals("TL")) {
+                    total += 3 * board.getTile(row + i, col).getPoints();
+                } else if (board.getTile(row + i, col).getBonus().equals("DL")) {
+                    total += 2 * board.getTile(row + i, col).getPoints();
+                } else {
+                    total += board.getTile(row + i, col).getPoints();
+                }
+            }
+        } else {
+            for (int i = 0; i < word.length(); i++) {
+                if (board.getTile(row, col + i).getBonus().equals("TW")) {
+                    total += board.getTile(row + i, col).getPoints();
+                    multiplier *= 3;
+                } else if (board.getTile(row, col + i).getBonus().equals("DW")) {
+                    total += board.getTile(row, col + i).getPoints();
+                    multiplier *= 2;
+                } else if (board.getTile(row, col + i).getBonus().equals("TL")) {
+                    total += 3 * board.getTile(row, col + i).getPoints();
+                } else if (board.getTile(row, col + i).getBonus().equals("DL")) {
+                    total += 2 * board.getTile(row, col + i).getPoints();
+                } else {
+                    total += board.getTile(row, col + i).getPoints();
+                }
+            }
+            player.addPoints(total * multiplier);
         }
     }
 
