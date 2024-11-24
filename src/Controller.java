@@ -14,7 +14,9 @@ public abstract class Controller implements ActionListener {
         model = new Game();
         this.view = model.getView();
 
-        view.getVerticalButton().addActionListener(e->verticleButton());
+        view.disableButtons();
+
+        view.getVerticalButton().addActionListener(e-> verticalButton());
         view.getHorizontalButton().addActionListener(e->horizontalButton());
         CustomButton[][] button = view.getButtons();
         for (int row = 0; row < 15; row++) {
@@ -33,7 +35,7 @@ public abstract class Controller implements ActionListener {
 
 
 
-    private void verticleButton(){
+    private void verticalButton(){
         view.setVertical(true);
         view.getVerticalButton().setEnabled(false); // Disable after selecting vertical
         view.getHorizontalButton().setEnabled(false); // Disable horizontal as well
@@ -101,6 +103,12 @@ public abstract class Controller implements ActionListener {
             view.setSelectedTile(null);
             //view.updateHandPanel();
             view.disableButtons();
+
+            if(storedButton != null){
+                storedButton.setEnabled(false);
+                storedButton = null;
+            }
+
         }
     }
 
@@ -135,8 +143,8 @@ public abstract class Controller implements ActionListener {
         view.setFirstLetter(true);
         view.setBeforeStart(true);
         view.updateView();
+        view.refreshHandPanel();
         view.setInputWord("");
-
     }
     public void skip(ActionEvent e) {
 
@@ -199,5 +207,6 @@ public abstract class Controller implements ActionListener {
             }
         };
     }
+
 
 }
