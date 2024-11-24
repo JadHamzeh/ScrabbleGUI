@@ -138,6 +138,7 @@ public abstract class Controller implements ActionListener {
         view.updateView();
         view.setInputWord("");
         view.updateScoreboard(model.player);
+        view.refreshHandPanel();
 
     }
     public void skip(ActionEvent e) {
