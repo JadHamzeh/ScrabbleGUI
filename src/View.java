@@ -23,6 +23,9 @@ class View {
     private JPanel skipPannel;
     private JButton skip;
     private JButton submit;
+    private JPanel scoreboardPanel;
+    private JLabel[] playerScores;
+
 
     public JPanel getHandPanel() {
         return handPanel;
@@ -326,6 +329,37 @@ class View {
 
     }
 
+    /**
+     * Initializes the scoreboard panel to display the scores of all players.
+     *
+     * @param players an array of Player objects representing all players in game
+     */
+    public void initializeScoreboard(Player[] players) {
+        scoreboardPanel = new JPanel(new GridLayout(players.length, 1));
+        playerScores = new JLabel[players.length];
+
+        for (int i = 0; i < players.length; i++) {
+            playerScores[i] = new JLabel(players[i].getName() + ": " + players[i].getPoints() + " points");
+            scoreboardPanel.add(playerScores[i]);
+        }
+
+        frame.add(scoreboardPanel, BorderLayout.EAST);
+        frame.revalidate();
+    }
+
+
+    /**
+     * Updates the scoreboard panel to reflect the current scores of all players.
+     *
+     * @param players an array of Player objects representing all players in game
+     */
+    public void updateScoreboard(Player[] players) {
+        for (int i = 0; i < players.length; i++) {
+            playerScores[i].setText(players[i].getName() + ": " + players[i].getPoints() + " points");
+        }
+        scoreboardPanel.revalidate();
+        scoreboardPanel.repaint();
+    }
 
 
     public CustomButton[] getHandButtons(){
