@@ -207,7 +207,7 @@ class View {
 
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        frame.setPreferredSize(new Dimension(900,500));
         submit = new JButton("Submit");
         skipPannel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         skipPannel.setPreferredSize(new Dimension(100,100));
@@ -242,10 +242,16 @@ class View {
         // Add buttons for each tile in the current player's hand
         for (int i = 0; i < 7; i++) {
             handButtons[i].setText(Character.toString(model.getCurrentPlayer().getHand().get(i).getLetter()));
-            handButtons[i].setEnabled(true);
+            handButtons[i].setEnabled(handButtons[i].isEnabled());
         }
         handPanel.revalidate();
         handPanel.repaint();
+    }
+
+    public void refreshHandPanel(){
+        for (int i = 0; i < 7; i++) {
+            handButtons[i].setEnabled(true);
+        }
     }
 
 
@@ -274,6 +280,8 @@ class View {
 
         }
     }
+
+
 
     /**
      * Updates the board view with the current state of the tiles.
@@ -343,7 +351,7 @@ class View {
             scoreboardPanel.add(playerScores[i]);
         }
 
-        frame.add(scoreboardPanel, BorderLayout.EAST);
+        frame.add(scoreboardPanel, BorderLayout.SOUTH);
         frame.revalidate();
     }
 

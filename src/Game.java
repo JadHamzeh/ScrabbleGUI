@@ -55,6 +55,7 @@ public class Game {
     }
 
     // Methods
+
     /**
      * Initializes the tile pile with the correct quantity of each letter tile.
      * Shuffles the tiles to randomize their order.
@@ -361,14 +362,14 @@ public class Game {
 
     private void generateCombinations(ArrayList<Character> letters, String currentWord, int remainingLength, ArrayList<String> words) {
         if (remainingLength == 0) {
-            // Base case
+            // Base case: Word is complete
             if (check.isWord(currentWord.toLowerCase())) {
                 words.add(currentWord.toUpperCase());
             }
             return;
         }
 
-        //recursive case
+        // Recursive case: Try adding each letter
         for (int i = 0; i < letters.size(); i++) {
             char chosenLetter = letters.get(i);
             ArrayList<Character> remainingLetters = new ArrayList<>(letters);
@@ -393,54 +394,8 @@ public class Game {
             int points2 = getPoints(word2);
             return Integer.compare(points2, points1); // Descending order
         });
+
         return wordList;
-    }
-
-    private int getWordRowVertical(String word){
-
-        return 1;
-    }
-
-    private int getWordColVertical(String word){
-
-        return 1;
-    }
-    private int getWordRowHorizontal(String word){
-
-        return 1;
-    }
-    private int getWordColHorizontal(String word){
-
-        return 1;
-    }
-
-    public void aiPlay(char direction){
-        ArrayList<String> wordList = sortPoints(getWords());
-        int row = 0;
-        int col = 0;
-        direction = 'V'; //default verticle
-        String playingWord = null;
-
-        //iterates through the words by
-        for (String word: wordList){
-            row = getWordRowVertical(word);
-            col = getWordColVertical(word);
-            if (canPlaceWord(word,row,col,'V',getCurrentPlayer())){
-                playingWord = word;
-                break;
-            }
-
-            row = getWordRowHorizontal(word);
-            col = getWordColHorizontal(word);
-            if (canPlaceWord(word,row,col,'H',getCurrentPlayer())){
-                playingWord = word;
-                direction = 'H';
-                break;
-            }
-            if (playingWord!=null) {
-                play(playingWord, direction, row, col);
-            }
-        }
     }
 
 
