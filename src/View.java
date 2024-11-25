@@ -178,6 +178,7 @@ class View {
         handButtons = new CustomButton[7];
         for (int i = 0; i < 7; i++) {
             CustomButton tileButton = new CustomButton(String.valueOf(model.getCurrentPlayer().getHand().get(i).getLetter()));
+            tileButton.setPreferredSize(new Dimension(75, 50));
             handButtons[i] = tileButton;
             handPanel.add(handButtons[i]);
         }
