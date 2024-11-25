@@ -477,21 +477,30 @@ public class Game {
         int col = 0;
 
 
-        for (WordInfo word: wordList){
-            //horizontal Case
+        for (WordInfo word : wordList) {
+            // Horizontal Case
             col = getWordCol(word, 'V');
             row = getWordRow(word, 'V');
-            if(canPlaceWord(word.getWord(),row,col,'V', getCurrentPlayer())){
-                chosenWord = word.getWord();
-                break;
+
+            // Ensure row and col are between 1 and 15
+            if (row >= 0 && row <= 14 && col >= 0 && col <= 14) {
+                if (canPlaceWord(word.getWord(), row, col, 'V', getCurrentPlayer())) {
+                    chosenWord = word.getWord();
+                    break;
+                }
             }
-            //vertical case
+
+            // Vertical Case
             col = getWordCol(word, 'H');
             row = getWordRow(word, 'H');
-            if(canPlaceWord(word.getWord(),row,col,'H', getCurrentPlayer())){
-                chosenWord = word.getWord();
-                direction = 'H';
-                break;
+
+            // Ensure row and col are between 1 and 15
+            if (row >= 0 && row <= 14 && col >= 1 && col <= 14) {
+                if (canPlaceWord(word.getWord(), row, col, 'H', getCurrentPlayer())) {
+                    chosenWord = word.getWord();
+                    direction = 'H';
+                    break;
+                }
             }
         }
 
