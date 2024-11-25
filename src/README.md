@@ -73,6 +73,16 @@ The Scrabble game features an AI player that follows a strategic decision-making
 
 ---
 
+## **Premium Tiles**
+
+Premium Tiles are represented in the GUI as 4 colors.  
+**Red** Tiles represent a Triple Word bonus  
+**Pink** Tiles represent a Double Word bonus  
+**Blue** Tiles represent a Triple Letter bonus  
+**Cyan** Tiles represent a Double Letter bonus  
+
+---
+
 ## **Technologies Used**
 
 - **Java**  
@@ -89,16 +99,6 @@ This project is a **non-commercial educational project** created for learning pu
 **Scrabble®** is a registered trademark of **Hasbro, Inc.** (in the U.S. and Canada) and **Mattel** (elsewhere).  
 This implementation is not affiliated with or endorsed by the official owners of the Scrabble game.  
 All copyrights, trademarks, and intellectual property related to **Scrabble** belong to their respective owners.
-
----
-
-## **Premium Tiles**
-
-Premium Tiles are represented in the GUI as 4 colors.
-**Red** Tiles represent a Triple Word bonus
-**Pink** Tiles represent a Double Word bonus
-**Blue** Tiles represent a Triple Letter bonus
-**Cyan** Tiles represent a Double Letter bonus
 
 ---
 
