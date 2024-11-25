@@ -111,9 +111,7 @@ public abstract class Controller implements ActionListener {
             storedButton.setEnabled(false);
         }
     }
-
     public void submitButton(ActionEvent e) {
-
         boolean isTouchingExistingLetter = false;
 
         // Check adjacency for each newly placed tile
@@ -130,32 +128,28 @@ public abstract class Controller implements ActionListener {
                 break;
             }
         }
-        if(!view.getVertical()){
-            while(model.getBoard().getTile(view.getTargetRow(), view.getTargetCol() + view.getInputWord().length()).getLetter() != ' '){
+        if (!view.getVertical()) {
+            while (model.getBoard().getTile(view.getTargetRow(), view.getTargetCol() + view.getInputWord().length()).getLetter() != ' ') {
                 view.addInputWord(model.getBoard().getTile(view.getTargetRow(), view.getTargetCol() + view.getInputWord().length()).getLetter());
             }
-        }else{
-            while(model.getBoard().getTile(view.getTargetRow() + view.getInputWord().length(), view.getTargetCol()).getLetter() != ' '){
+        } else {
+            while (model.getBoard().getTile(view.getTargetRow() + view.getInputWord().length(), view.getTargetCol()).getLetter() != ' ') {
                 view.addInputWord(model.getBoard().getTile(view.getTargetRow() + view.getInputWord().length(), view.getTargetCol()).getLetter());
             }
         }
-        if(isTouchingExistingLetter){
-            if (model.play(view.getInputWord().toLowerCase(), view.getDirection(), view.getTargetRow(), view.getTargetCol())){
 
-                System.out.println("Input word " + view.getInputWord() +" Row: " + view.getTargetRow() + " Col: " + view.getTargetCol() +" Dir:" + view.getDirection());
-                JOptionPane.showMessageDialog(view.getFrame(),"submitted word: " + view.getInputWord() + " it is now " + model.getCurrentPlayer().getName() + "'s turn, they have " + model.getCurrentPlayer().getPoints() + " points");
+        if (isTouchingExistingLetter) {
+            if (model.play(view.getInputWord().toLowerCase(), view.getDirection(), view.getTargetRow(), view.getTargetCol())) {
+                System.out.println("Input word " + view.getInputWord() + " Row: " + view.getTargetRow() + " Col: " + view.getTargetCol() + " Dir:" + view.getDirection());
+                JOptionPane.showMessageDialog(view.getFrame(), "Submitted word: " + view.getInputWord() + "\nIt is now " + model.getCurrentPlayer().getName() + "'s turn. They have " + model.getCurrentPlayer().getPoints() + " points.");
 
-            }else{
-                JOptionPane.showMessageDialog(view.getFrame(),"tried to submit word: " + view.getInputWord() +" invalid word please try again");
-                view.refreshHandPanel(false);
+                showScores(); // Show player scores here
+            } else {
+                JOptionPane.showMessageDialog(view.getFrame(), "Tried to submit word: " + view.getInputWord() + "\nInvalid word. Please try again.");
             }
-        }else{
+        } else {
             JOptionPane.showMessageDialog(view.getFrame(), "Word must touch an existing letter on the board!");
-            view.refreshHandPanel(false);
-
         }
-
-
 
         view.getHorizontalButton().setEnabled(true);
         view.getVerticalButton().setEnabled(true);
@@ -173,10 +167,9 @@ public abstract class Controller implements ActionListener {
 //        view.updateScoreboard(model.player);
         view.refreshHandPanel(false);
     }
-    public void skip(ActionEvent e) {
 
+    public void skip(ActionEvent e) {
         model.nextPlayer();
-        //replace hand with next players hand
         view.updateHandPanel();
         view.setBeforeStart(true);
         view.setInputWord("");
@@ -185,7 +178,11 @@ public abstract class Controller implements ActionListener {
         view.updateHandPanel();
         view.updateView();
 //        view.updateScoreboard(model.player);
-        JOptionPane.showMessageDialog(view.getFrame(),"Skipping turn, it is now " + model.getCurrentPlayer().getName() + "'s turn, they have " + model.getCurrentPlayer().getPoints() + " points");
+
+        JOptionPane.showMessageDialog(view.getFrame(), "Skipping turn. It is now " + model.getCurrentPlayer().getName() + "'s turn. They have " + model.getCurrentPlayer().getPoints() + " points.");
+
+        showScores(); // Shows player scores
+
         view.refreshHandPanel(false);
     }
     public static void blankSelector() {
@@ -228,6 +225,20 @@ public abstract class Controller implements ActionListener {
         frame.setVisible(true);
     }
 
+    /**
+     * Display the current scores of all players in a message box.
+     */
+    private void showScores() {
+        StringBuilder scoreMessage = new StringBuilder("Current Scores:\n");
+        for (Player player : model.player) {
+            scoreMessage.append(player.getName())
+                    .append(": ")
+                    .append(player.getPoints())
+                    .append(" points\n");
+        }
+        JOptionPane.showMessageDialog(view.getFrame(), scoreMessage.toString(), "Player Scores", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     public static void main(String[] args) {
         Controller controller = new Controller() {
             @Override
@@ -236,5 +247,6 @@ public abstract class Controller implements ActionListener {
             }
         };
     }
+
 
 }
