@@ -168,6 +168,6 @@ public class GameTest {
         player.addTile(new Tile('D'));
         player.setPoints(0);
         game.placeWord("HOLD", 5, 11, 'V', player);
-        assertTrue(18 == player.getPoints(), "Score for 'HOLD' + 'HELLO' should be 8+8 points");
+        assertTrue(18 == player.getPoints(), "Score for 'HOLD' + 'HELLO' should be 9+9 points"); // there are two DL scores hit by 1-point letters so 16 + 2
     }
 }

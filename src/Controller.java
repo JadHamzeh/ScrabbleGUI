@@ -24,6 +24,7 @@ public abstract class Controller implements ActionListener {
         }
         view.getSubmit().addActionListener(this::submitButton);
         view.getSkip().addActionListener(this::skip);
+        view.getAi_turn().addActionListener(this::ai_turn);
         for (int i = 0; i < 7; i++) {
             view.getHandButtons()[i].addActionListener(this::handButton);
         }
@@ -184,6 +185,9 @@ public abstract class Controller implements ActionListener {
         showScores(); // Shows player scores
 
         view.refreshHandPanel(false);
+    }
+    public void ai_turn(ActionEvent e){
+        //model.aiPlay();
     }
     public static void blankSelector() {
         // create the temporary frame
