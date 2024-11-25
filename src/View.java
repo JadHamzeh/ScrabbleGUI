@@ -327,7 +327,6 @@ class View {
         }
         frame.revalidate();
         frame.repaint();
-
     }
 
 
