@@ -29,6 +29,29 @@ This project is a simplified implementation of the Scrabble game using **Java**.
 
 ---
 
+## AI Strategy
+The Scrabble game features an AI player that follows a strategic decision-making process. Here’s how the AI works:
+
+### AI Logic
+1. **Word Generation**
+- The AI scans the board for existing tiles.
+- It combines the board's letters with its own hand tiles to generate potential words of lengths 2-5.
+
+2. **Word Validation**
+-Each generated word is validated against the word dictionary (WordBank.txt) to ensure it’s legal.
+-The AI considers both horizontal and vertical placements.
+
+3. **Score Calculation**
+-The AI calculates scores for all valid words, considering Scrabble's point rules and bonus tiles (e.g., double word and triple letter).
+
+4. **Optimal Move Selection**
+-The AI selects the highest-scoring valid word.
+-It prioritizes moves that leverage bonus tiles or create high-value combinations.
+
+5. **Execution**
+-The AI places its chosen word on the board and updates its hand.
+-If no valid moves are available, the AI skips its turn.
+
 ## **Features**
 
 - **Multiplayer Support**  
