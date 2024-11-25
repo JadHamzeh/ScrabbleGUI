@@ -269,11 +269,13 @@ public class Game {
                 if (direction == 'H') {
                     board.setTile(row, col + i, newTile);
                     String temp = buildWord(row, col + i, 'V', Character.toString(board.getTile(row, col + i).getLetter()));
+
                     if (temp.length() > 1) {
                         int start = row;
                         while (start > 0 && board.getTile(start -1, col + i).getLetter() != ' ') { // find starting letter index within col
                             start--;
                         }
+
                         addPoints(temp, player, start, col + i, 'V');
                     }
                 } else { // direction == 'V'
@@ -281,10 +283,11 @@ public class Game {
                     String temp = buildWord(row+i, col, 'H', Character.toString(board.getTile(row+i, col).getLetter()));
                     if (temp.length() > 1) {
                         int start = col;
-                        while (start > 0 && board.getTile(start +i, col - 1).getLetter() != ' ') { // find starting letter index within col
+                        while (start > 0 && board.getTile(row +i, start - 1).getLetter() != ' ') { // find starting letter index within col
                             start--;
                         }
                         addPoints(temp, player, row + i, start, 'H');
+
                     }
                 }
             }
@@ -334,8 +337,8 @@ public class Game {
                     total += board.getTile(row, col + i).getPoints();
                 }
             }
-            player.addPoints(total * multiplier);
         }
+        player.addPoints(total * multiplier);
     }
 
     public void nextPlayer() {

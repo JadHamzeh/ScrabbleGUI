@@ -147,8 +147,11 @@ public class Board {
      * @param tile The Tile to place at the specified position.
      */
     public void setTile(int row, int col, Tile tile) {
+
         if (row >= 0 && row < 15 && col >= 0 && col < 15) {
+            Tile temp = board[row][col];
             board[row][col] = tile;
+            board[row][col].setBonus(temp.getBonus());
         }
     }
 
