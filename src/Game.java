@@ -411,11 +411,14 @@ public class Game {
         return words;
     }
 
+    private final Set<String> placedWords = new HashSet<>();
+
     private void generateCombinations(ArrayList<Character> letters, String currentWord, int maxLength,
                                       ArrayList<WordInfo> words, Character boardLetter, int row, int col) {
         if (currentWord.length() == maxLength) {
-            if (currentWord.contains(boardLetter.toString())) {
+            if (currentWord.contains(boardLetter.toString()) && !placedWords.contains(currentWord)) {
                 words.add(new WordInfo(currentWord, row, col, boardLetter));
+                placedWords.add(currentWord);
             }
             return;
         }
@@ -426,6 +429,7 @@ public class Game {
             generateCombinations(remainingLetters, currentWord + letter, maxLength, words, boardLetter, row, col);
         }
     }
+
 
     public int getPoints(String word) {
         int points = 0;
