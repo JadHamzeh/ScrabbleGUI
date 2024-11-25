@@ -92,6 +92,16 @@ All copyrights, trademarks, and intellectual property related to **Scrabble** be
 
 ---
 
+## **Premium Tiles**
+
+Premium Tiles are represented in the GUI as 4 colors.
+**Red** Tiles represent a Triple Word bonus
+**Pink** Tiles represent a Double Word bonus
+**Blue** Tiles represent a Triple Letter bonus
+**Cyan** Tiles represent a Double Letter bonus
+
+---
+
 ## **Contributors**
 
 - JStLouisCode 
