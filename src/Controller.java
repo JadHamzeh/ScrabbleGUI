@@ -29,7 +29,7 @@ public abstract class Controller implements ActionListener {
         }
         view.getHandPanel().revalidate();
         view.getHandPanel().repaint();
-        view.initializeScoreboard(model.player);
+//        view.initializeScoreboard(model.player);
         view.refreshHandPanel(false);
     }
 
@@ -170,7 +170,7 @@ public abstract class Controller implements ActionListener {
         view.setBeforeStart(true);
         view.updateView();
         view.setInputWord("");
-        view.updateScoreboard(model.player);
+//        view.updateScoreboard(model.player);
         view.refreshHandPanel(false);
     }
     public void skip(ActionEvent e) {
@@ -184,7 +184,7 @@ public abstract class Controller implements ActionListener {
         view.getVerticalButton().setEnabled(true);
         view.updateHandPanel();
         view.updateView();
-        view.updateScoreboard(model.player);
+//        view.updateScoreboard(model.player);
         JOptionPane.showMessageDialog(view.getFrame(),"Skipping turn, it is now " + model.getCurrentPlayer().getName() + "'s turn, they have " + model.getCurrentPlayer().getPoints() + " points");
         view.refreshHandPanel(false);
     }

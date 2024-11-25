@@ -13,6 +13,7 @@ class View {
     private List<Point> tilesPlacedThisTurn = new ArrayList<>();
 
 
+
     private JPanel directionPanel;
     private int targetRow;
     private int targetCol;
@@ -30,6 +31,7 @@ class View {
     private JPanel skipPannel;
     private JButton skip;
     private JButton submit;
+    private JButton ai_turn;
     private JPanel scoreboardPanel;
     private JLabel[] playerScores;
 
@@ -120,6 +122,7 @@ class View {
         return verticalButton;
     }
 
+    public JButton getAi_turn(){return ai_turn;}
     public JButton getHorizontalButton() {
         return horizontalButton;
     }
@@ -181,6 +184,10 @@ class View {
 
         updateHandPanel();
 
+        // initialize ai_turn button;
+
+        ai_turn = new JButton("Play AI Turn!");
+
         // Initialize the direction buttons
         directionPanel = new JPanel(new GridLayout(2, 1));
         verticalButton = new JButton("Vertical");
@@ -214,11 +221,14 @@ class View {
 
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(900,500));
+        frame.setPreferredSize(new Dimension(1000,600));
         submit = new JButton("Submit");
-        skipPannel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        skipPannel.setPreferredSize(new Dimension(100,100));
-        skip = new JButton("skip");
+        submit.setPreferredSize(new Dimension(600, 80));
+        skipPannel = new JPanel(new GridLayout(2, 1));
+        skipPannel.setPreferredSize(new Dimension(150,100));
+        skip = new JButton("Skip");
+        skipPannel.add(skip);
+        skipPannel.add(ai_turn);
         JPanel container = new JPanel(new GridLayout(15, 15, 0, 0));
         for (int row = 0; row < 15; row++) {
             for (int col = 0; col < 15; col++) {
@@ -231,7 +241,7 @@ class View {
         frame.add(directionPanel, BorderLayout.WEST);
         frame.add(container, BorderLayout.NORTH);
         frame.add(submit);
-        frame.add(skip,BorderLayout.EAST);
+        frame.add(skipPannel,BorderLayout.EAST);
         frame.pack();
         frame.setVisible(true);
         frame.setResizable(false);
@@ -394,7 +404,6 @@ class View {
     public List<Point> getTilesPlacedThisTurn() {
         return tilesPlacedThisTurn;
     }
-
 
 
 
