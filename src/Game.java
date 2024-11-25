@@ -364,14 +364,17 @@ public class Game {
 
 
     //AI Logic
-    public ArrayList<Character> getBoardLetters() {
-        ArrayList<Character> letters = new ArrayList<>();
+    public ArrayList<Tile> getBoardLetters(){
+        ArrayList<Tile> letters = new ArrayList<>();
 
         for (int row = 0; row < 15; row++) {
             for (int col = 0; col < 15; col++) {
-                Tile tile = getBoard().getTile(row, col);
-                if (!(tile.getLetter() == ' ')) {
-                    letters.add(tile.getLetter());
+                Tile tile = getBoard().getTile(row,col);
+                tile.setCol(col);
+                tile.setRow(row);
+                if (!(tile.getLetter() == ' ')){
+                    letters.add(tile);
+
                 }
             }
         }
@@ -379,51 +382,48 @@ public class Game {
     }
 
 
-    public ArrayList<String> getWords() {
-        ArrayList<Character> boardLetters = getBoardLetters();
-        ArrayList<Character> handLetters = new ArrayList<Character>();
-        ArrayList<String> words = new ArrayList<>();
+    public ArrayList<WordInfo> getWords() {
+        ArrayList<Tile> boardLetters = getBoardLetters();
+        ArrayList<Character> handLetters = new ArrayList<>();
+        ArrayList<WordInfo> words = new ArrayList<>();
 
         for (Tile tile : getCurrentPlayer().getHand()) {
-            Character tileButton = (tile.getLetter());
+            Character tileButton = tile.getLetter();
             handLetters.add(tileButton);
         }
-        for (Character boardLetter : boardLetters) {
-            words.addAll(findWords(boardLetter, handLetters));
+        for (Tile boardLetter : boardLetters) {
+
+            words.addAll(findWords(boardLetter.getLetter(), handLetters, boardLetter.getRow(), boardLetter.getCol()));
         }
 
         return words;
     }
 
-    public ArrayList<String> findWords(Character boardLetter, ArrayList<Character> handLetters) {
-        ArrayList<String> words = new ArrayList<>();
+    public ArrayList<WordInfo> findWords(Character boardLetter, ArrayList<Character> handLetters, int row, int col) {
+        ArrayList<WordInfo> words = new ArrayList<>();
         ArrayList<Character> allLetters = new ArrayList<>(handLetters);
         allLetters.add(boardLetter); // Include the board letter
 
         // Generate combinations for word lengths 2-5
         for (int wordLength = 2; wordLength <= 5; wordLength++) {
-            generateCombinations(allLetters, "", wordLength, words);
+            generateCombinations(allLetters, "", wordLength, words, boardLetter, row, col);
         }
-
         return words;
     }
 
-    private void generateCombinations(ArrayList<Character> letters, String currentWord, int remainingLength, ArrayList<String> words) {
-        if (remainingLength == 0) {
-            // Base case: Word is complete
-            if (check.isWord(currentWord.toLowerCase())) {
-                words.add(currentWord.toUpperCase());
+    private void generateCombinations(ArrayList<Character> letters, String currentWord, int maxLength,
+                                      ArrayList<WordInfo> words, Character boardLetter, int row, int col) {
+        if (currentWord.length() == maxLength) {
+            if (currentWord.contains(boardLetter.toString())) {
+                words.add(new WordInfo(currentWord, row, col, boardLetter));
             }
             return;
         }
-
-        // Recursive case: Try adding each letter
         for (int i = 0; i < letters.size(); i++) {
-            char chosenLetter = letters.get(i);
+            Character letter = letters.get(i);
             ArrayList<Character> remainingLetters = new ArrayList<>(letters);
-            remainingLetters.remove(i); // Avoid reusing the same letter
-
-            generateCombinations(remainingLetters, currentWord + chosenLetter, remainingLength - 1, words);
+            remainingLetters.remove(i);
+            generateCombinations(remainingLetters, currentWord + letter, maxLength, words, boardLetter, row, col);
         }
     }
 
@@ -436,14 +436,71 @@ public class Game {
         return points;
     }
 
-    public ArrayList<String> sortPoints(ArrayList<String> wordList) {
-        wordList.sort((word1, word2) -> {
-            int points1 = getPoints(word1);
-            int points2 = getPoints(word2);
+    public ArrayList<WordInfo> sortPoints(ArrayList<WordInfo> wordList) {
+        wordList.sort((wordInfo1, wordInfo2) -> {
+            int points1 = getPoints(wordInfo1.getWord());
+            int points2 = getPoints(wordInfo2.getWord());
             return Integer.compare(points2, points1); // Descending order
         });
 
         return wordList;
+    }
+
+
+    private int getWordCol(WordInfo word, Character orientation) {
+        if (orientation.equals('V')) {
+            // Vertical case: Column stays the same
+            return word.getCol();
+        } else {
+            // Horizontal case: Column changes based on the position of the last letter
+            int lastLetterIndex = word.getWord().length() - 1; // Index of the last letter
+            return word.getCol() + lastLetterIndex;
+        }
+    }
+
+    private int getWordRow(WordInfo word, Character orientation) {
+        if (orientation.equals('V')) {
+            // Vertical case: Row changes based on the position of the last letter
+            int lastLetterIndex = word.getWord().length() - 1; // Index of the last letter
+            return word.getRow() + lastLetterIndex;
+        } else {
+            // Horizontal case: Row stays the same
+            return word.getRow();
+        }
+    }
+
+    public void aiPlay(){
+        String chosenWord = null;
+        ArrayList<WordInfo> wordList = sortPoints(getWords());
+        char direction = 'V';
+        int row = 0;
+        int col = 0;
+
+
+        for (WordInfo word: wordList){
+            //horizontal Case
+            col = getWordCol(word, 'V');
+            row = getWordRow(word, 'V');
+            if(canPlaceWord(word.getWord(),row,col,'V', getCurrentPlayer())){
+                chosenWord = word.getWord();
+                break;
+            }
+            //vertical case
+            col = getWordCol(word, 'H');
+            row = getWordRow(word, 'H');
+            if(canPlaceWord(word.getWord(),row,col,'H', getCurrentPlayer())){
+                chosenWord = word.getWord();
+                direction = 'H';
+                break;
+            }
+        }
+
+        if (chosenWord != null){
+            play(chosenWord,direction,row,col);
+        }
+        else{
+            System.out.println("no words can be played");
+        }
     }
 
     public String buildWord(int row, int col, char direction, String word) {

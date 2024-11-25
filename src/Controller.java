@@ -187,7 +187,63 @@ public abstract class Controller implements ActionListener {
         view.refreshHandPanel(false);
     }
     public void ai_turn(ActionEvent e){
-        //model.aiPlay();
+        model.aiPlay();
+
+        boolean isTouchingExistingLetter = false;
+
+        // Check adjacency for each newly placed tile
+        for (Point p : view.getTilesPlacedThisTurn()) {
+            int row = p.x;
+            int col = p.y;
+
+            // Check adjacent tiles
+            if ((row > 0 && model.getBoard().getTile(row - 1, col).getLetter() != ' ') || // Above
+                    (row < 14 && model.getBoard().getTile(row + 1, col).getLetter() != ' ') || // Below
+                    (col > 0 && model.getBoard().getTile(row, col - 1).getLetter() != ' ') || // Left
+                    (col < 14 && model.getBoard().getTile(row, col + 1).getLetter() != ' ')) { // Right
+                isTouchingExistingLetter = true;
+                break;
+            }
+        }
+        if (!view.getVertical()) {
+            while (model.getBoard().getTile(view.getTargetRow(), view.getTargetCol() + view.getInputWord().length()).getLetter() != ' ') {
+                view.addInputWord(model.getBoard().getTile(view.getTargetRow(), view.getTargetCol() + view.getInputWord().length()).getLetter());
+            }
+        } else {
+            while (model.getBoard().getTile(view.getTargetRow() + view.getInputWord().length(), view.getTargetCol()).getLetter() != ' ') {
+                view.addInputWord(model.getBoard().getTile(view.getTargetRow() + view.getInputWord().length(), view.getTargetCol()).getLetter());
+            }
+        }
+
+        if (isTouchingExistingLetter) {
+            if (model.play(view.getInputWord().toLowerCase(), view.getDirection(), view.getTargetRow(), view.getTargetCol())) {
+                System.out.println("Input word " + view.getInputWord() + " Row: " + view.getTargetRow() + " Col: " + view.getTargetCol() + " Dir:" + view.getDirection());
+                JOptionPane.showMessageDialog(view.getFrame(), "Submitted word: " + view.getInputWord() + "\nIt is now " + model.getCurrentPlayer().getName() + "'s turn. They have " + model.getCurrentPlayer().getPoints() + " points.");
+
+                showScores(); // Show player scores here
+            } else {
+                JOptionPane.showMessageDialog(view.getFrame(), "Tried to submit word: " + view.getInputWord() + "\nInvalid word. Please try again.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(view.getFrame(), "Word must touch an existing letter on the board!");
+        }
+
+        view.getHorizontalButton().setEnabled(true);
+        view.getVerticalButton().setEnabled(true);
+        if(view.getVertical()){
+            view.setDirection('V');
+        }else{
+            view.setDirection('H');
+        }
+
+        view.updateHandPanel();
+        view.setFirstLetter(true);
+        view.setBeforeStart(true);
+        view.updateView();
+        view.setInputWord("");
+//        view.updateScoreboard(model.player);
+        view.refreshHandPanel(false);
+
     }
     public static void blankSelector() {
         // create the temporary frame

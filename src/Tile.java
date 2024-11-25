@@ -12,6 +12,8 @@ public class Tile {
     // The point value assigned to the tile based on Scrabble rules.
     int points;
 
+    Integer col;
+    Integer row;
     // Constructor
 
     /**
@@ -24,6 +26,8 @@ public class Tile {
         this.letter = letter;
         this.points = assignValue(letter);
         this.bonus = "0";
+        this.col = null;
+        this.row = null;
     }
 
     // Methods
@@ -74,5 +78,21 @@ public class Tile {
 
     public void setBonus(String bonus){
         this.bonus = bonus;
+    }
+
+    public Integer getRow() {
+        return row;
+    }
+
+    public Integer getCol() {
+        return col;
+    }
+
+    public void setRow(Integer row) {
+        this.row = row;
+    }
+
+    public void setCol(Integer col) {
+        this.col = col;
     }
 }
