@@ -454,7 +454,7 @@ public class Game {
         } else {
             // Horizontal case: Column changes based on the position of the last letter
             int lastLetterIndex = word.getWord().length() - 1; // Index of the last letter
-            return word.getCol() + lastLetterIndex;
+            return word.getCol() - lastLetterIndex;
         }
     }
 
@@ -462,7 +462,7 @@ public class Game {
         if (orientation.equals('V')) {
             // Vertical case: Row changes based on the position of the last letter
             int lastLetterIndex = word.getWord().length() - 1; // Index of the last letter
-            return word.getRow() + lastLetterIndex;
+            return word.getRow() - lastLetterIndex;
         } else {
             // Horizontal case: Row stays the same
             return word.getRow();
