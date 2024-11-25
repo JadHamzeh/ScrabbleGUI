@@ -341,29 +341,60 @@ public class Game {
         player.addPoints(total * multiplier);
     }
 
+    /**
+     * Advances the game to the next player's turn.
+     * Updates the current player index in a circular manner (0 -> 1 -> 2 -> 3 -> 0).
+     */
     public void nextPlayer() {
         currentPlayer = (currentPlayer + 1) % 4;
         currentPlayerIndex = currentPlayer;
     }
 
+    /**
+     * Retrieves the current player.
+     *
+     * @return the Player object representing the current player.
+     */
     public Player getCurrentPlayer() {
         return player[currentPlayerIndex];
     }
 
+    /**
+     * Retrieves the game board.
+     *
+     * @return the Board object representing the game's board.
+     */
     public Board getBoard() {
         return this.board;
     }
 
+    /**
+     * Retrieves the word validator used to check word validity.
+     *
+     * @return the  Word object used for word validation.
+     */
     public Word getCheck() {
         return check;
     }
 
+    /**
+     * Retrieves the game view.
+     *
+     * @return the View object representing the game's user interface.
+     */
     public View getView() {
         return view;
     }
 
 
     //AI Logic
+
+    /**
+     * Collects all tiles on the board that have letters placed on them.
+     * Each tile is updated with its row and column position on the board.
+     *
+     * @return an ArrayList of Tile objects representing tiles with letters on the board.
+     */
     public ArrayList<Tile> getBoardLetters(){
         ArrayList<Tile> letters = new ArrayList<>();
 
@@ -381,7 +412,13 @@ public class Game {
         return letters;
     }
 
-
+    /**
+     * Generates a list of possible words that can be formed using the current player's hand
+     * and letters already on the board.
+     *
+     * @return an ArrayList of WordInfo objects representing potential words
+     * that can be formed.
+     */
     public ArrayList<WordInfo> getWords() {
         ArrayList<Tile> boardLetters = getBoardLetters();
         ArrayList<Character> handLetters = new ArrayList<>();
@@ -399,6 +436,16 @@ public class Game {
         return words;
     }
 
+    /**
+     * Generates a list of possible words that can be formed using the specified letter from the board,
+     * the player's hand letters, and the letter's position on the board.
+     *
+     * @param boardLetter the letter on the board being used to form words.
+     * @param handLetters a list of characters representing the letters in the player's hand.
+     * @param row         the row position of the board letter.
+     * @param col         the column position of the board letter.
+     * @return an ArrayList of WordInfo objects representing potential words.
+     */
     public ArrayList<WordInfo> findWords(Character boardLetter, ArrayList<Character> handLetters, int row, int col) {
         ArrayList<WordInfo> words = new ArrayList<>();
         ArrayList<Character> allLetters = new ArrayList<>(handLetters);
@@ -413,6 +460,17 @@ public class Game {
 
     private final Set<String> placedWords = new HashSet<>();
 
+    /**
+     * Generates all possible word combinations using the given letters and adds valid words to the list.
+     *
+     * @param letters       the available letters to form words, including the board letter.
+     * @param currentWord   the current word being built recursively.
+     * @param maxLength     the maximum length of words to generate.
+     * @param words         the list to store valid words along with their information.
+     * @param boardLetter   the letter from the board used to form the word.
+     * @param row           the row position of the board letter.
+     * @param col           the column position of the board letter.
+     */
     private void generateCombinations(ArrayList<Character> letters, String currentWord, int maxLength,
                                       ArrayList<WordInfo> words, Character boardLetter, int row, int col) {
         if (currentWord.length() == maxLength) {
@@ -431,6 +489,12 @@ public class Game {
     }
 
 
+    /**
+     * Calculates the total points for a given word based on the point values of its letters.
+     *
+     * @param word the word to calculate points for.
+     * @return the total points for the word.
+     */
     public int getPoints(String word) {
         int points = 0;
         for (Character letter : word.toUpperCase().toCharArray()) {
@@ -440,6 +504,12 @@ public class Game {
         return points;
     }
 
+    /**
+     * Sorts a list of words based on their point values in descending order.
+     *
+     * @param wordList the list of words to sort.
+     * @return the sorted list of words.
+     */
     public ArrayList<WordInfo> sortPoints(ArrayList<WordInfo> wordList) {
         wordList.sort((wordInfo1, wordInfo2) -> {
             int points1 = getPoints(wordInfo1.getWord());
@@ -450,7 +520,13 @@ public class Game {
         return wordList;
     }
 
-
+    /**
+     * Calculates the starting column position for a word based on its orientation.
+     *
+     * @param word        the word information containing its position and content.
+     * @param orientation the orientation of the word ('V' for vertical, 'H' for horizontal).
+     * @return the starting column position of the word.
+     */
     private int getWordCol(WordInfo word, Character orientation) {
         if (orientation.equals('V')) {
             // Vertical case: Column stays the same
@@ -462,6 +538,13 @@ public class Game {
         }
     }
 
+    /**
+     * Calculates the starting row position for a word based on its orientation.
+     *
+     * @param word        the word information containing its position and content.
+     * @param orientation the orientation of the word ('V' for vertical, 'H' for horizontal).
+     * @return the starting row position of the word.
+     */
     private int getWordRow(WordInfo word, Character orientation) {
         if (orientation.equals('V')) {
             // Vertical case: Row changes based on the position of the last letter
@@ -472,7 +555,9 @@ public class Game {
             return word.getRow();
         }
     }
-
+    /**
+     * Allows the AI to play its turn by selecting the highest-scoring valid word and placing it on the board.
+     */
     public void aiPlay(){
         String chosenWord = null;
         ArrayList<WordInfo> wordList = sortPoints(getWords());
@@ -517,6 +602,15 @@ public class Game {
         }
     }
 
+    /**
+     * Builds a word based on its placement direction and adjacent letters on the board.
+     *
+     * @param row       the starting row position of the word.
+     * @param col       the starting column position of the word.
+     * @param direction the direction of the word ('H' for horizontal, 'V' for vertical).
+     * @param word      the word being placed.
+     * @return the complete word including adjacent letters.
+     */
     public String buildWord(int row, int col, char direction, String word) {
         if (direction == 'H') {
             StringBuilder adjacent = new StringBuilder();

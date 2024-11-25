@@ -5,11 +5,20 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * The Controller class manages user interactions and game logic for Scrabble. It listens to user actions, updates the view,
+ * and modifies the model accordingly.
+ */
 public abstract class Controller implements ActionListener {
     private static Game model;
-    private static View view;
-    CustomButton storedButton;
+    // The game model representing the state and logic of the game.
+    private static View view; // The game view that displays the board and UI components.
+    CustomButton storedButton; // Stores the button selected by the player.
 
+    /**
+     * Constructor for the {@code Controller} class.
+     * Initializes the game model, view, and action listeners for all UI components.
+     */
     public Controller() {
         model = new Game();
         this.view = model.getView();
@@ -34,8 +43,10 @@ public abstract class Controller implements ActionListener {
         view.refreshHandPanel(false);
     }
 
-
-
+    /**
+     * Handles the "Vertical" button click event.
+     * Enables vertical word placement mode and disables further direction changes.
+     */
     private void verticleButton(){
         view.setVertical(true);
         view.getVerticalButton().setEnabled(false); // Disable after selecting vertical
@@ -44,6 +55,11 @@ public abstract class Controller implements ActionListener {
         view.updateEnabledTiles();
         view.refreshHandPanel(true);
     }
+
+    /**
+     * Handles the "Horizontal" button click event.
+     * Enables horizontal word placement mode and disables further direction changes.
+     */
     private void horizontalButton() {
         view.setVertical(false);
         view.getVerticalButton().setEnabled(false); // Disable after selecting horizontal
@@ -53,6 +69,12 @@ public abstract class Controller implements ActionListener {
         view.refreshHandPanel(true);
     }
 
+    /**
+     * Handles the player's hand button click event.
+     * Stores the selected tile and updates the hand and board buttons accordingly.
+     *
+     * @param e the action event triggered by clicking a hand button.
+     */
     public void handButton (ActionEvent e){
         CustomButton button = (CustomButton) e.getSource();
         storedButton = (CustomButton) e.getSource();
@@ -71,6 +93,12 @@ public abstract class Controller implements ActionListener {
         view.updateHandPanel();
     }
 
+    /**
+     * Handles the board button click event.
+     * Places the selected tile on the board and updates the game state.
+     *
+     * @param e the action event triggered by clicking a board button.
+     */
     public void clickedBoard (ActionEvent e) {
         CustomButton clickedButton = (CustomButton) e.getSource();
         CustomButton[][] button = view.getButtons();
@@ -112,6 +140,13 @@ public abstract class Controller implements ActionListener {
             storedButton.setEnabled(false);
         }
     }
+
+    /**
+     * Handles the "Submit" button click event.
+     * Validates the word placement, updates the board, and transitions to the next player.
+     *
+     * @param e the action event triggered by clicking the submit button.
+     */
     public void submitButton(ActionEvent e) {
         boolean isTouchingExistingLetter = false;
 
@@ -169,6 +204,12 @@ public abstract class Controller implements ActionListener {
         view.refreshHandPanel(false);
     }
 
+    /**
+     * Handles the "Skip" button click event.
+     * Moves to the next player's turn and refreshes the game view.
+     *
+     * @param e the action event triggered by clicking the "Skip" button.
+     */
     public void skip(ActionEvent e) {
         model.nextPlayer();
         view.updateHandPanel();
@@ -186,6 +227,13 @@ public abstract class Controller implements ActionListener {
 
         view.refreshHandPanel(false);
     }
+
+    /**
+     * Handles the "AI Turn" button click event.
+     * Allows the AI to make a move, validates the move, and updates the game view.
+     *
+     * @param e the action event triggered by clicking the "AI Turn" button.
+     */
     public void ai_turn(ActionEvent e){
         model.aiPlay();
 
@@ -244,6 +292,10 @@ public abstract class Controller implements ActionListener {
         view.refreshHandPanel(false);
 
     }
+
+    /**
+     * Displays a dialog box for selecting a replacement letter when a blank tile is used.
+     */
     public static void blankSelector() {
         // create the temporary frame
         JFrame frame = new JFrame("Which letter would you like?");
