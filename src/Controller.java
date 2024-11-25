@@ -224,8 +224,6 @@ public abstract class Controller implements ActionListener {
             } else {
                 JOptionPane.showMessageDialog(view.getFrame(), "Tried to submit word: " + view.getInputWord() + "\nInvalid word. Please try again.");
             }
-        } else {
-            JOptionPane.showMessageDialog(view.getFrame(), "Word must touch an existing letter on the board!");
         }
 
         view.getHorizontalButton().setEnabled(true);
@@ -235,6 +233,7 @@ public abstract class Controller implements ActionListener {
         }else{
             view.setDirection('H');
         }
+        showScores();
 
         view.updateHandPanel();
         view.setFirstLetter(true);
