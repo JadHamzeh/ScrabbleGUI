@@ -453,16 +453,16 @@ public class Game {
             return word.getCol();
         } else {
             // Horizontal case: Column changes based on the position of the last letter
-            int lastLetterIndex = word.getWord().length() - 1; // Index of the last letter
-            return word.getCol() - lastLetterIndex;
+            int LetterIndex = word.getLetterIndex(); // Index of the last letter
+            return word.getCol() - LetterIndex;
         }
     }
 
     private int getWordRow(WordInfo word, Character orientation) {
         if (orientation.equals('V')) {
             // Vertical case: Row changes based on the position of the last letter
-            int lastLetterIndex = word.getWord().length() - 1; // Index of the last letter
-            return word.getRow() - lastLetterIndex;
+            int LetterIndex = word.getLetterIndex(); // Index of the last letter
+            return word.getRow() - LetterIndex;
         } else {
             // Horizontal case: Row stays the same
             return word.getRow();
@@ -506,6 +506,7 @@ public class Game {
 
         if (chosenWord != null){
             play(chosenWord,direction,row,col);
+            System.out.println(chosenWord);
         }
         else{
             System.out.println("no words can be played");
