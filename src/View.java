@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.ArrayList;
 import java.awt.Point;
 import java.util.Locale;
+import java.util.Stack;
+
 class View {
-
-
+    private Stack<Game> undo;
+    private Stack<Game> redo;
+    private JMenu options;
     private List<Point> tilesPlacedThisTurn = new ArrayList<>();
-
-
-
     private JPanel directionPanel;
     private int targetRow;
     private int targetCol;
@@ -35,6 +35,8 @@ class View {
     private JPanel scoreboardPanel;
     private JLabel[] playerScores;
 
+    private JMenuItem undoMenuItem;
+    private JMenuItem redoMenuItem;
 
     public JPanel getHandPanel() {
         return handPanel;
@@ -159,6 +161,7 @@ class View {
         this.inputWord = inputWord;
     }
 
+
     /**
      * Constructor for the View class.
      * Initializes the game model, sets up the UI components, and displays the main game window.
@@ -170,8 +173,18 @@ class View {
     public View(Game model) {
         this.model = model;
         this.check = new Word();
+        this.undo = new Stack<>();
+        this.redo = new Stack<>();
         model.initializeTiles();
         model.initializePlayer();
+
+        JMenuBar menu = new JMenuBar();
+        options = new JMenu("options");
+        undoMenuItem = new JMenuItem("undo");
+        redoMenuItem = new JMenuItem("redo");
+        options.add(undoMenuItem);
+        options.add(redoMenuItem);
+        menu.add(options);
         // Initialize hand panel
         handPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         handPanel.setPreferredSize(new Dimension(700, 50));
@@ -246,6 +259,7 @@ class View {
         frame.pack();
         frame.setVisible(true);
         frame.setResizable(false);
+        frame.setJMenuBar(menu);
         updateView();
     }
 
@@ -407,5 +421,43 @@ class View {
 
     public CustomButton[] getHandButtons(){
         return handButtons;
+    }
+
+    public Stack<Game> getUndo() {
+        return undo;
+    }
+
+    public Stack<Game> getRedo() {
+        return redo;
+    }
+    public void addState(Game currentState) {
+        undo.push(currentState);
+        redo.clear();
+    }
+    public Game undo(Game currentState) {
+        if (!undo.isEmpty()) {
+            redo.push(currentState);
+            return undo.pop();
+        } else {
+            System.out.println("No undo available!");
+            return currentState;
+        }
+    }
+    public Game redo(Game currentState) {
+        if (!redo.isEmpty()) {
+            undo.push(currentState);
+            return redo.pop();
+        } else {
+            System.out.println("No redo available!");
+            return currentState;
+        }
+    }
+
+    public JMenuItem getUndoMenuItem() {
+        return undoMenuItem;
+    }
+
+    public JMenuItem getRedoMenuItem() {
+        return redoMenuItem;
     }
 }

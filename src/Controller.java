@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Stack;
 
 /**
  * The Controller class manages user interactions and game logic for Scrabble. It listens to user actions, updates the view,
@@ -12,6 +13,8 @@ import java.awt.event.ActionListener;
 public abstract class Controller implements ActionListener {
     private static Game model;
     // The game model representing the state and logic of the game.
+
+
     private static View view; // The game view that displays the board and UI components.
     CustomButton storedButton; // Stores the button selected by the player.
 
@@ -37,6 +40,8 @@ public abstract class Controller implements ActionListener {
         for (int i = 0; i < 7; i++) {
             view.getHandButtons()[i].addActionListener(this::handButton);
         }
+        view.getUndoMenuItem().addActionListener(e-> undoButton());
+        view.getRedoMenuItem().addActionListener(e->redoButton());
         view.getHandPanel().revalidate();
         view.getHandPanel().repaint();
 //        view.initializeScoreboard(model.player);
@@ -148,6 +153,9 @@ public abstract class Controller implements ActionListener {
      * @param e the action event triggered by clicking the submit button.
      */
     public void submitButton(ActionEvent e) {
+        Game currentState = model;
+        view.addState(currentState);
+
         boolean isTouchingExistingLetter = false;
 
         // Check adjacency for each newly placed tile
@@ -211,6 +219,8 @@ public abstract class Controller implements ActionListener {
      * @param e the action event triggered by clicking the "Skip" button.
      */
     public void skip(ActionEvent e) {
+        Game currentState = model;
+        view.addState(currentState);
         model.nextPlayer();
         view.updateHandPanel();
         view.setBeforeStart(true);
@@ -235,6 +245,8 @@ public abstract class Controller implements ActionListener {
      * @param e the action event triggered by clicking the "AI Turn" button.
      */
     public void ai_turn(ActionEvent e){
+        Game currentState = model;
+        view.addState(currentState);
         model.aiPlay();
 
         boolean isTouchingExistingLetter = false;
@@ -293,6 +305,29 @@ public abstract class Controller implements ActionListener {
 
     }
 
+    private void undoButton(){
+        if (!view.getUndo().isEmpty()) {
+            Game currentState = model;
+            view.getRedo().push(currentState);
+            Game previousState = view.getUndo().pop();
+            model = previousState;
+            view.updateView();
+        } else {
+            System.out.println("No undo available!");
+        }
+    }
+
+    private void redoButton(){
+        if (!view.getRedo().isEmpty()) {
+            Game currentState = model;
+            view.getUndo().push(currentState);
+            Game nextState = view.getRedo().pop();
+            model = nextState;
+            view.updateView();
+        } else {
+            System.out.println("No redo available!");
+        }
+    }
     /**
      * Displays a dialog box for selecting a replacement letter when a blank tile is used.
      */
@@ -349,6 +384,7 @@ public abstract class Controller implements ActionListener {
         }
         JOptionPane.showMessageDialog(view.getFrame(), scoreMessage.toString(), "Player Scores", JOptionPane.INFORMATION_MESSAGE);
     }
+
 
     public static void main(String[] args) {
         Controller controller = new Controller() {
