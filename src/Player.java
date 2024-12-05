@@ -1,5 +1,6 @@
 package src;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -7,13 +8,13 @@ import java.util.*;
  * It manages the player's hand of tiles, points, and actions related to gameplay,
  * such as adding and removing tiles, checking for valid moves, and displaying the hand.
  */
-public class Player {
+public class Player implements Serializable {
 
     // Attributes
     final private ArrayList<Tile> hand; // A list of tiles in the player's hand.
     private int points;
     final private String name;
-
+    private static final long serialVersionUID = 1L;
     // Constructor
 
     /**

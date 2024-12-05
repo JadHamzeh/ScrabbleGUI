@@ -1,5 +1,6 @@
 package src;
 
+import java.io.Serializable;
 import java.util.*;
 import java.awt.*;
 import javax.swing.*;
@@ -9,11 +10,11 @@ import java.awt.event.*;
  * The Game class manages the overall flow of the Scrabble game.
  * It initializes the game components, handles player actions, word validation, and tile placement.
  */
-public class Game {
+public class Game implements Serializable {
 
     private View view;
+    private static final long serialVersionUID = 1L;
 
-    private JButton[][] buttons;
     // Attributes
 
     // The collection of tiles available in the game.

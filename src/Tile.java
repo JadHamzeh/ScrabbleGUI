@@ -1,11 +1,13 @@
 package src;
 
+import java.io.Serializable;
+
 /**
  * Tile class represents an individual letter tile in Scrabble.
  * Each tile has a letter and an associated point value according to Scrabble rules.
  */
-public class Tile {
-
+public class Tile implements Serializable {
+    private static final long serialVersionUID = 1L;
     // Attributes
     char letter; // The letter printed on the tile (e.g., 'a', 'e', 'x').
     String bonus;

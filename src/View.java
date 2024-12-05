@@ -3,13 +3,14 @@ package src;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 import java.awt.Point;
 import java.util.Locale;
 import java.util.Stack;
 
-class View {
+class View implements Serializable {
     private Stack<Game> undo;
     private Stack<Game> redo;
     private JMenu options;
@@ -20,6 +21,8 @@ class View {
     private boolean first_letter = true; // is the current player placing their first tile
 
     private boolean isVertical;
+
+    private static final long serialVersionUID = 1L;
 
     private char direction = 'H';
     private CustomButton[][] buttons;

@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.Stack;
 
 /**
@@ -14,6 +15,8 @@ public abstract class Controller implements ActionListener {
     private static Game model;
     // The game model representing the state and logic of the game.
 
+    private Stack<byte[]> undoStack = new Stack<>();
+    private Stack<byte[]> redoStack = new Stack<>();
 
     private static View view; // The game view that displays the board and UI components.
     CustomButton storedButton; // Stores the button selected by the player.
@@ -155,7 +158,7 @@ public abstract class Controller implements ActionListener {
     public void submitButton(ActionEvent e) {
         Game currentState = model;
         view.addState(currentState);
-
+        saveState();
         boolean isTouchingExistingLetter = false;
 
         // Check adjacency for each newly placed tile
@@ -220,6 +223,7 @@ public abstract class Controller implements ActionListener {
      */
     public void skip(ActionEvent e) {
         Game currentState = model;
+        saveState();
         view.addState(currentState);
         model.nextPlayer();
         view.updateHandPanel();
@@ -247,6 +251,7 @@ public abstract class Controller implements ActionListener {
     public void ai_turn(ActionEvent e){
         Game currentState = model;
         view.addState(currentState);
+        saveState();
         model.aiPlay();
 
         boolean isTouchingExistingLetter = false;
@@ -306,27 +311,28 @@ public abstract class Controller implements ActionListener {
     }
 
     private void undoButton(){
-        if (!view.getUndo().isEmpty()) {
-            Game currentState = model;
-            view.getRedo().push(currentState);
-            Game previousState = view.getUndo().pop();
-            model = previousState;
+        if (!undoStack.isEmpty()) {
+            redoStack.push(serializeCurrentState()); // Save current state for redo
+            byte[] previousState = undoStack.pop();
+            model.getBoard().displayBoard();
+            restoreState(previousState);
+            model.getBoard().displayBoard();
             view.updateView();
         } else {
             System.out.println("No undo available!");
         }
+        view.updateView();
     }
 
     private void redoButton(){
-        if (!view.getRedo().isEmpty()) {
-            Game currentState = model;
-            view.getUndo().push(currentState);
-            Game nextState = view.getRedo().pop();
-            model = nextState;
-            view.updateView();
+        if (!redoStack.isEmpty()) {
+            undoStack.push(serializeCurrentState()); // Save current state for undo
+            byte[] nextState = redoStack.pop();
+            restoreState(nextState);
         } else {
             System.out.println("No redo available!");
         }
+        view.updateView();
     }
     /**
      * Displays a dialog box for selecting a replacement letter when a blank tile is used.
@@ -385,6 +391,36 @@ public abstract class Controller implements ActionListener {
         JOptionPane.showMessageDialog(view.getFrame(), scoreMessage.toString(), "Player Scores", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    private void saveState() {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(model);
+            undoStack.push(baos.toByteArray()); // Save serialized state
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void restoreState(byte[] state) {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(state);
+             ObjectInputStream ois = new ObjectInputStream(bais)) {
+            model = (Game) ois.readObject();
+            view.updateView(); // Update the view to reflect the restored state
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private byte[] serializeCurrentState() {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(model);
+            return baos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public static void main(String[] args) {
         Controller controller = new Controller() {

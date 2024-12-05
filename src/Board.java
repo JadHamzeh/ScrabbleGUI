@@ -1,15 +1,17 @@
 package src;
 
+import java.io.Serializable;
+
 /**
  * Board class represents the Scrabble board, which is a 15x15 grid of tiles.
  * It initializes the board, displays it, and manages tiles at specific positions.
  */
-public class Board {
+public class Board implements Serializable {
 
     // Attributes
     private Tile[][] board = new Tile[15][15]; // A 15x15 grid of Tile objects representing the Scrabble board.
 
-
+    private static final long serialVersionUID = 1L;
     // Constructor
 
     /**

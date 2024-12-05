@@ -1,16 +1,17 @@
 package src;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * TilePile class represents a collection of tiles in Scrabble.
  * It manages adding, removing, and retrieving tiles from the pile.
  */
-public class TilePile {
+public class TilePile implements Serializable {
 
     // Attributes
     ArrayList<Tile> tiles; // A list to store the Tile objects in the pile.
-
+    private static final long serialVersionUID = 1L;
     // Constructor
 
     /**

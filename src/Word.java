@@ -9,11 +9,11 @@ import java.io.*;
  * It reads a list of words from file ("WordBank.txt")
  * and provides functionality to check if a given word is valid.
  */
-public class Word {
+public class Word implements Serializable{
 
     // Attributes
     Set<String> wordBank; // A set containing all valid words, stored in lowercase for easy lookup.
-
+    private static final long serialVersionUID = 1L;
     // Constructor
 
     /**
