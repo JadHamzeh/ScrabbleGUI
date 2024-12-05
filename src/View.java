@@ -182,9 +182,9 @@ class View implements Serializable {
         model.initializePlayer();
 
         JMenuBar menu = new JMenuBar();
-        options = new JMenu("options");
-        undoMenuItem = new JMenuItem("undo");
-        redoMenuItem = new JMenuItem("redo");
+        options = new JMenu("Options");
+        undoMenuItem = new JMenuItem("Undo");
+        redoMenuItem = new JMenuItem("Redo");
         options.add(undoMenuItem);
         options.add(redoMenuItem);
         menu.add(options);
@@ -459,7 +459,9 @@ class View implements Serializable {
     public JMenuItem getUndoMenuItem() {
         return undoMenuItem;
     }
-
+    public void setModel(Game model){
+        this.model = model;
+    }
     public JMenuItem getRedoMenuItem() {
         return redoMenuItem;
     }

@@ -405,10 +405,12 @@ public abstract class Controller implements ActionListener {
         try (ByteArrayInputStream bais = new ByteArrayInputStream(state);
              ObjectInputStream ois = new ObjectInputStream(bais)) {
             model = (Game) ois.readObject();
+            view.setModel(model);
             view.updateView(); // Update the view to reflect the restored state
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        showScores();
     }
 
     private byte[] serializeCurrentState() {

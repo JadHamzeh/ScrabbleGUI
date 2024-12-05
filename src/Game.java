@@ -603,6 +603,8 @@ public class Game implements Serializable {
         }
     }
 
+
+
     /**
      * Builds a word based on its placement direction and adjacent letters on the board.
      *
