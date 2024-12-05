@@ -29,7 +29,7 @@ public abstract class Controller implements ActionListener {
         model = new Game();
         this.view = model.getView();
 
-        view.getVerticalButton().addActionListener(e->verticleButton());
+        view.getVerticalButton().addActionListener(e-> verticalButton());
         view.getHorizontalButton().addActionListener(e->horizontalButton());
         CustomButton[][] button = view.getButtons();
         for (int row = 0; row < 15; row++) {
@@ -45,22 +45,88 @@ public abstract class Controller implements ActionListener {
         }
         view.getUndoMenuItem().addActionListener(e-> undoButton());
         view.getRedoMenuItem().addActionListener(e->redoButton());
+        
+        view.getDefaultLayout().addActionListener(e->defaultLayout());
+        view.getChaosLayout().addActionListener(e->chaosLayout());
+        view.getRingLayout().addActionListener(e->ringLayout());
+        
         view.getHandPanel().revalidate();
         view.getHandPanel().repaint();
 //        view.initializeScoreboard(model.player);
         view.refreshHandPanel(false);
     }
 
+    private void ringLayout() {
+        System.out.println(model.start());
+        if(model.start()) {
+            model.getBoard().setPremiumLayout("src/premiumRing.xml");
+            view.getChaosLayout().setEnabled(true);
+            view.getDefaultLayout().setEnabled(true);
+            view.getRingLayout().setEnabled(false);
+
+            view.getHorizontalButton().setEnabled(true);
+            view.getVerticalButton().setEnabled(true);
+            view.updateHandPanel();
+            view.setFirstLetter(true);
+            view.setBeforeStart(true);
+            view.updateView();
+            view.setInputWord("");
+            view.refreshHandPanel(false);
+        }else{
+            JOptionPane.showMessageDialog(view.getFrame(), "You may only change the premium square layout on the first turn.");
+        }
+    }
+
+    private void chaosLayout() {
+        if(model.start()) {
+            model.getBoard().setPremiumLayout("src/premiumChaos.xml");
+            view.getChaosLayout().setEnabled(false);
+            view.getDefaultLayout().setEnabled(true);
+            view.getRingLayout().setEnabled(true);
+
+            view.getHorizontalButton().setEnabled(true);
+            view.getVerticalButton().setEnabled(true);
+            view.updateHandPanel();
+            view.setFirstLetter(true);
+            view.setBeforeStart(true);
+            view.updateView();
+            view.setInputWord("");
+            view.refreshHandPanel(false);
+        }else{
+            JOptionPane.showMessageDialog(view.getFrame(), "You may only change the premium square layout on the first turn.");
+        }
+    }
+
+    private void defaultLayout() {
+        if(model.start()) {
+            model.getBoard().setPremiumLayout("src/premiumDefault.xml");
+            view.getChaosLayout().setEnabled(true);
+            view.getDefaultLayout().setEnabled(false);
+            view.getRingLayout().setEnabled(true);
+
+            view.getHorizontalButton().setEnabled(true);
+            view.getVerticalButton().setEnabled(true);
+            view.updateHandPanel();
+            view.setFirstLetter(true);
+            view.setBeforeStart(true);
+            view.updateView();
+            view.setInputWord("");
+            view.refreshHandPanel(false);
+        }else{
+            JOptionPane.showMessageDialog(view.getFrame(), "You may only change the premium square layout on the first turn.");
+        }
+    }
+
     /**
      * Handles the "Vertical" button click event.
      * Enables vertical word placement mode and disables further direction changes.
      */
-    private void verticleButton(){
+    private void verticalButton(){
         view.setVertical(true);
         view.getVerticalButton().setEnabled(false); // Disable after selecting vertical
         view.getHorizontalButton().setEnabled(false); // Disable horizontal as well
         view.setDirection('V');
-        view.updateEnabledTiles();
+        view.disableButtons();
         view.refreshHandPanel(true);
     }
 
@@ -73,7 +139,7 @@ public abstract class Controller implements ActionListener {
         view.getVerticalButton().setEnabled(false); // Disable after selecting horizontal
         view.getHorizontalButton().setEnabled(false); // Disable vertical as well
         view.setDirection('H');
-        view.updateEnabledTiles();
+        view.disableButtons();
         view.refreshHandPanel(true);
     }
 
@@ -312,11 +378,9 @@ public abstract class Controller implements ActionListener {
 
     private void undoButton(){
         if (!undoStack.isEmpty()) {
-            redoStack.push(serializeCurrentState()); // Save current state for redo
+            redoStack.push(serializeCurrentState()); // save current state for redo
             byte[] previousState = undoStack.pop();
-            model.getBoard().displayBoard();
             restoreState(previousState);
-            model.getBoard().displayBoard();
             view.updateView();
         } else {
             System.out.println("No undo available!");
@@ -326,7 +390,7 @@ public abstract class Controller implements ActionListener {
 
     private void redoButton(){
         if (!redoStack.isEmpty()) {
-            undoStack.push(serializeCurrentState()); // Save current state for undo
+            undoStack.push(serializeCurrentState()); // resave current state for undo
             byte[] nextState = redoStack.pop();
             restoreState(nextState);
         } else {
@@ -347,7 +411,7 @@ public abstract class Controller implements ActionListener {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(5, 6, 10, 10)); // 5 rows x 6 columns with gaps
 
-        // Create an ActionListener to handle button clicks
+        // create an ActionListener to handle button clicks in the secondary menu
         ActionListener buttonClickListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -395,7 +459,7 @@ public abstract class Controller implements ActionListener {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
              ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(model);
-            undoStack.push(baos.toByteArray()); // Save serialized state
+            undoStack.push(baos.toByteArray()); // save serialized state on undoStack
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -406,7 +470,7 @@ public abstract class Controller implements ActionListener {
              ObjectInputStream ois = new ObjectInputStream(bais)) {
             model = (Game) ois.readObject();
             view.setModel(model);
-            view.updateView(); // Update the view to reflect the restored state
+            view.updateView(); // update the view to reflect the restored state
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

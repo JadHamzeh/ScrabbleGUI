@@ -14,6 +14,7 @@ class View implements Serializable {
     private Stack<Game> undo;
     private Stack<Game> redo;
     private JMenu options;
+    private JMenu premiumLayout;
     private List<Point> tilesPlacedThisTurn = new ArrayList<>();
     private JPanel directionPanel;
     private int targetRow;
@@ -40,6 +41,10 @@ class View implements Serializable {
 
     private JMenuItem undoMenuItem;
     private JMenuItem redoMenuItem;
+
+    private JMenuItem defaultLayout;
+    private JMenuItem chaosLayout;
+    private JMenuItem ringLayout;
 
     public JPanel getHandPanel() {
         return handPanel;
@@ -188,6 +193,17 @@ class View implements Serializable {
         options.add(undoMenuItem);
         options.add(redoMenuItem);
         menu.add(options);
+
+        premiumLayout = new JMenu("Premium Layout");
+        defaultLayout = new JMenuItem("Default Scrabble Layout");
+        chaosLayout = new JMenuItem("Chaos Layout");
+        ringLayout = new JMenuItem("Ring Scrabble Layout");
+        premiumLayout.add(defaultLayout);
+        premiumLayout.add(chaosLayout);
+        premiumLayout.add(ringLayout);
+        menu.add(premiumLayout);
+
+        defaultLayout.setEnabled(false);
         // Initialize hand panel
         handPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         handPanel.setPreferredSize(new Dimension(700, 50));
@@ -333,8 +349,9 @@ class View implements Serializable {
                     buttons[row][col].setBackground(Color.PINK);
                 }else if (tile.getBonus().equals("DL")) {
                     buttons[row][col].setBackground(Color.CYAN);
+                }else if (tile.getBonus().equals("0")) {
+                    buttons[row][col].setBackground(new Button("").getBackground());
                 }
-
                 if (tile != null && tile.getLetter() != ' ') {
                     buttons[row][col].setText(String.valueOf(tile.getLetter()));
                 } else {
@@ -459,10 +476,15 @@ class View implements Serializable {
     public JMenuItem getUndoMenuItem() {
         return undoMenuItem;
     }
-    public void setModel(Game model){
-        this.model = model;
-    }
     public JMenuItem getRedoMenuItem() {
         return redoMenuItem;
+    }
+
+    public JMenuItem getDefaultLayout(){ return defaultLayout;}
+    public JMenuItem getChaosLayout(){ return chaosLayout;}
+    public JMenuItem getRingLayout(){ return ringLayout;}
+
+    public void setModel(Game model){
+        this.model = model;
     }
 }

@@ -1,6 +1,10 @@
 package src;
 
 import java.io.Serializable;
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import java.io.*;
+import java.util.*;
 
 /**
  * Board class represents the Scrabble board, which is a 15x15 grid of tiles.
@@ -10,8 +14,9 @@ public class Board implements Serializable {
 
     // Attributes
     private Tile[][] board = new Tile[15][15]; // A 15x15 grid of Tile objects representing the Scrabble board.
-
+    private Map<String, List<Map<String, Integer>>> premiumSquares;
     private static final long serialVersionUID = 1L;
+    private String premiumLayout;
     // Constructor
 
     /**
@@ -27,70 +32,8 @@ public class Board implements Serializable {
             }
         }
         board[7][7] = tile; // Place the specified tile at the center
+        setPremiumLayout("src/premiumDefault.xml");
 
-        // triple word bonuses
-        for(int i = 0; i < 15; i = i+7){
-            for(int j = 0; j < 15; j = j+7){
-                board[i][j].setBonus("TW");
-            }
-        }
-
-        // triple letter
-        for(int i = 1; i < 15; i = i+4){
-            for(int j = 1; j < 15; j = j+4){
-                board[i][j].setBonus("TL");
-            }
-        }
-        for(int i = 1; i < 15; i = i+12){
-            for(int j = 1; j < 15; j = j+12){
-                board[i][j].setBonus("0");
-            }
-        }
-
-        // double word
-        int x = 1;
-        for(int i = 1; i < 14; i ++){
-                if(board[i][x].getBonus().equals("0")){
-                    board[i][x].setBonus("DW");
-                }
-                x++;
-        }
-        x = 13;
-        for(int i = 1; i < 14; i++){
-            if(board[i][x].getBonus().equals("0")){
-                board[i][x].setBonus("DW");
-            }
-            x--;
-        }
-
-        //double letter
-        for(int i = 0; i < 15; i = i+7){
-            for(int j = 3; j < 15; j = j+8){
-                board[i][j].setBonus("DL");
-            }
-        }
-        for(int i = 3; i < 15; i = i+8){
-            for(int j = 0; j < 15; j = j+7){
-                board[i][j].setBonus("DL");
-            }
-        }
-        for(int i = 6; i < 9; i = i+2){
-            for(int j = 2; j < 13; j = j+2){
-                board[i][j].setBonus("DL");
-            }
-        }
-        for(int i = 2; i < 14; i = i+10){
-            for(int j = 6; j < 9; j = j+2){
-                board[i][j].setBonus("DL");
-            }
-        }
-        for(int i = 6; i < 9; i = i+2){
-            for(int j = 4; j < 13; j = j+6){
-                board[i][j].setBonus("0");
-            }
-        }
-
-        board[7][7].setBonus("0");
     }
 
     /**
@@ -163,7 +106,99 @@ public class Board implements Serializable {
     }
 
 
+    public void setPremiumLayout(String premiumLayout) {
+        this.premiumLayout = premiumLayout;
+        applyPremiumBonuses();
 
+    }
+    private void readPremiumSquaresFromXML() { // contruct a map of the premium tiles
+        try {
+            // create builder through factory
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
+            // parse the currently selected .xml file
+            File xmlFile = new File(premiumLayout);
+            Document doc = builder.parse(xmlFile);
 
+            // create premiumSquares map
+            premiumSquares = new HashMap<>();
+
+            // get the types of premium squares
+            NodeList premiumSquareList = doc.getElementsByTagName("premiumSquare");
+
+            for (int i = 0; i < premiumSquareList.getLength(); i++) {
+                Node node = premiumSquareList.item(i); // get the premium squares
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    String type = element.getAttribute("type"); // type attribute of this premium square specifier
+
+                    //get the coordinates specified under this type
+                    NodeList coordinateList = element.getElementsByTagName("coordinate");
+                    List<Map<String, Integer>> coordinates = new ArrayList<>();
+
+                    for (int j = 0; j < coordinateList.getLength(); j++) { // go through each element under this PS element
+                        Node coordinateNode = coordinateList.item(j); // get coord in this element
+                        if (coordinateNode.getNodeType() == Node.ELEMENT_NODE) {
+                            Element coordinateElement = (Element) coordinateNode;
+                            int row = Integer.parseInt(coordinateElement.getAttribute("row")); // grab row of coord
+                            int col = Integer.parseInt(coordinateElement.getAttribute("col")); // grab col of coord
+
+                            Map<String, Integer> coordinate = new HashMap<>(); // map with row col of this coord
+                            coordinate.put("row", row);
+                            coordinate.put("col", col);
+                            coordinates.add(coordinate); // array list of coord maps
+                        }
+                    }
+                    premiumSquares.put(type, coordinates); // add array list of coord maps to type map
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Applies the bonuses to the board tiles based on the premiumSquares data.
+     */
+    private void applyPremiumBonuses() {
+        // read xml into map
+        readPremiumSquaresFromXML();
+
+        // clear old bonuses
+        for(int i = 0; i < 15; i++){
+            for(int j= 0; j < 15; j++){
+                board[i][j].setBonus("0");
+            }
+        }
+
+        // use map of coordinate data to fill in premium squares
+        for (Map.Entry<String, List<Map<String, Integer>>> entry : premiumSquares.entrySet()) {
+            String type = entry.getKey(); // get premium tile type
+            List<Map<String, Integer>> coordinates = entry.getValue(); // map containing array list of coord maps
+
+            // loop
+            for (Map<String, Integer> coord : coordinates) { // map of the row col
+                int row = coord.get("row");
+                int col = coord.get("col");
+                // set the bonus on the tile based on the premium square type
+                switch (type) {
+                    case "tripleWord":
+                        board[row][col].setBonus("TW");
+                        break;
+                    case "doubleWord":
+                        board[row][col].setBonus("DW");
+                        break;
+                    case "tripleLetter":
+                        board[row][col].setBonus("TL");
+                        break;
+                    case "doubleLetter":
+                        board[row][col].setBonus("DL");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
 }

@@ -14,6 +14,7 @@ public class Game implements Serializable {
 
     private View view;
     private static final long serialVersionUID = 1L;
+    private boolean turn0 = true;
 
     // Attributes
 
@@ -46,7 +47,7 @@ public class Game implements Serializable {
         this.initializeTiles();
         this.initializePlayer();
         Tile temp = tilePile.deleteTile();
-        while (temp.getLetter() == '*') { // make sure centre tile isnt blank tile
+        while (temp.getLetter() == '*') { // make sure centre tile isn't blank tile
             tilePile.addTile('*', 1);
             temp = tilePile.deleteTile();
         }
@@ -115,6 +116,7 @@ public class Game implements Serializable {
         if (canPlaceWord(word.toUpperCase(), row, col, direction, player[currentPlayer])) { // can the word be legally placed
             placeWord(word.toUpperCase(), row, col, direction, player[currentPlayer]); // place it
             nextPlayer();
+            turn0 = false;
             return true;
         }
         currentPlayerIndex = currentPlayer;
@@ -387,6 +389,9 @@ public class Game implements Serializable {
         return view;
     }
 
+    public boolean start(){
+        return turn0;
+    }
 
     //AI Logic
 
