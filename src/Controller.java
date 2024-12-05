@@ -382,6 +382,7 @@ public abstract class Controller implements ActionListener {
             byte[] previousState = undoStack.pop();
             restoreState(previousState);
             view.updateView();
+            view.updateHandPanel();
         } else {
             System.out.println("No undo available!");
         }
@@ -393,10 +394,11 @@ public abstract class Controller implements ActionListener {
             undoStack.push(serializeCurrentState()); // resave current state for undo
             byte[] nextState = redoStack.pop();
             restoreState(nextState);
+            view.updateView();
+            view.updateHandPanel();
         } else {
             System.out.println("No redo available!");
         }
-        view.updateView();
     }
     /**
      * Displays a dialog box for selecting a replacement letter when a blank tile is used.
