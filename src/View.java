@@ -279,7 +279,6 @@ class View implements Serializable {
             }
         }
 
-
         frame.add(handPanel, BorderLayout.SOUTH);
         frame.add(directionPanel, BorderLayout.WEST);
         frame.add(container, BorderLayout.NORTH);
@@ -289,7 +288,7 @@ class View implements Serializable {
         frame.add(skipPannel,BorderLayout.EAST);
         frame.pack();
         frame.setVisible(true);
-
+        frame.setResizable(false);
         frame.setJMenuBar(menu);
         updateView();
     }

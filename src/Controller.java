@@ -357,18 +357,17 @@ public abstract class Controller implements ActionListener {
         timer.stop();
         view.addState(currentState);
         model.nextPlayer();
-        view.updateHandPanel();
+
         view.setBeforeStart(true);
         view.setInputWord("");
         view.getHorizontalButton().setEnabled(true);
         view.getVerticalButton().setEnabled(true);
-        view.updateHandPanel();
         view.updateView();
 //        view.updateScoreboard(model.player);
 
         JOptionPane.showMessageDialog(view.getFrame(), "Skipping turn. It is now " + model.getCurrentPlayer().getName() + "'s turn. They have " + model.getCurrentPlayer().getPoints() + " points.");
-
         showScores(); // Shows player scores
+        view.updateHandPanel();
         timerMode();
         view.refreshHandPanel(false);
     }
@@ -387,7 +386,6 @@ public abstract class Controller implements ActionListener {
         model.aiPlay();
         view.getHorizontalButton().setEnabled(true);
         view.getVerticalButton().setEnabled(true);
-        view.updateHandPanel();
         view.setFirstLetter(true);
         view.setBeforeStart(true);
         view.updateView();
@@ -395,6 +393,7 @@ public abstract class Controller implements ActionListener {
 
         JOptionPane.showMessageDialog(view.getFrame(), "Word placed automatically!\nIt is now " + model.getCurrentPlayer().getName() + "'s turn.");
         showScores(); // Show player scores here
+        view.updateHandPanel();
         timerMode();
 //        view.updateScoreboard(model.player);
         view.refreshHandPanel(false);
