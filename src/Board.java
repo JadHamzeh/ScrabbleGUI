@@ -36,6 +36,8 @@ public class Board implements Serializable {
 
     }
 
+    public String getPremiumLayout(){return premiumLayout;}
+
     /**
      * Displays the current state of the board in a formatted grid.
      * Each tile's letter is shown within the grid, and row/column numbers are printed for clarity.

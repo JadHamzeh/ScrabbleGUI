@@ -662,4 +662,9 @@ public class Game implements Serializable {
             return adjacent.toString().toLowerCase();
         }
     }
+
+    public void prevPlayer(){
+        currentPlayer--;
+        currentPlayerIndex--;
+    }
 }

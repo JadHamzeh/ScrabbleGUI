@@ -153,6 +153,9 @@ public abstract class Controller implements ActionListener {
         timer.start();
     }
 
+    public Game getModel(){ return model;} // testing
+    public View getView(){ return model.getView();}
+
     private void ringLayout() {
         if(model.start()) {
             model.getBoard().setPremiumLayout("src/premiumRing.xml");
@@ -441,7 +444,7 @@ public abstract class Controller implements ActionListener {
 
     }
 
-    private void undoButton(){
+    public void undoButton(){
         if (!undoStack.isEmpty()) {
             redoStack.push(serializeCurrentState()); // save current state for redo
             byte[] previousState = undoStack.pop();
@@ -457,7 +460,7 @@ public abstract class Controller implements ActionListener {
         view.updateView();
     }
 
-    private void redoButton(){
+    public void redoButton(){
         if (!redoStack.isEmpty()) {
             undoStack.push(serializeCurrentState()); // resave current state for undo
             byte[] nextState = redoStack.pop();
@@ -528,7 +531,7 @@ public abstract class Controller implements ActionListener {
         JOptionPane.showMessageDialog(view.getFrame(), scoreMessage.toString(), "Player Scores", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private void saveState() {
+    public void saveState() {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
              ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(model);
@@ -538,7 +541,7 @@ public abstract class Controller implements ActionListener {
         }
     }
 
-    private void restoreState(byte[] state) {
+    public void restoreState(byte[] state) {
         try (ByteArrayInputStream bais = new ByteArrayInputStream(state);
              ObjectInputStream ois = new ObjectInputStream(bais)) {
             model = (Game) ois.readObject();
@@ -569,6 +572,4 @@ public abstract class Controller implements ActionListener {
             }
         };
     }
-
-
 }
