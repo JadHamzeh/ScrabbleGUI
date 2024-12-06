@@ -17,7 +17,7 @@ public abstract class Controller implements ActionListener {
 
     private Stack<byte[]> undoStack = new Stack<>();
     private Stack<byte[]> redoStack = new Stack<>();
-
+    private Timer timer;
     private static View view; // The game view that displays the board and UI components.
     CustomButton storedButton; // Stores the button selected by the player.
 
@@ -28,6 +28,8 @@ public abstract class Controller implements ActionListener {
     public Controller() {
         model = new Game();
         this.view = model.getView();
+
+        timer = new Timer(0, null);
 
         view.getVerticalButton().addActionListener(e-> verticalButton());
         view.getHorizontalButton().addActionListener(e->horizontalButton());
@@ -49,11 +51,71 @@ public abstract class Controller implements ActionListener {
         view.getDefaultLayout().addActionListener(e->defaultLayout());
         view.getChaosLayout().addActionListener(e->chaosLayout());
         view.getRingLayout().addActionListener(e->ringLayout());
-        
+
+        view.getTimerON().addActionListener(e->timerMode());
+        view.getTimerOFF().addActionListener(e->timerOff());
+
         view.getHandPanel().revalidate();
         view.getHandPanel().repaint();
 //        view.initializeScoreboard(model.player);
         view.refreshHandPanel(false);
+    }
+
+    private void timerOff() {
+        timer.stop();
+        view.getTimerCount().setBackground(null);
+        view.getTimerCount().setForeground(Color.black);
+        view.getTimerCount().remove(view.getTimerOFF());
+        view.getTimerCount().add(view.getTimerON());
+        view.getTimerCount().setText("Timed Mode");
+    }
+
+    private void timerMode() {
+        timer.stop();
+        view.getTimerCount().setBackground(null);
+        view.getTimerCount().setForeground(null);
+        view.getTimerCount().remove(view.getTimerON());
+        view.getTimerCount().add(view.getTimerOFF());
+        final int[] remainingTime = {30}; // must use a final single integer array for timer to access
+        view.getTimerCount().setText("Time remaining: " + remainingTime[0]);
+        timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (remainingTime[0] > 1) {
+                    remainingTime[0]--;
+                    view.getTimerCount().setText("Time remaining: " + remainingTime[0]);
+                    if(remainingTime[0] <= 15 && remainingTime[0] > 5){
+                        if (!view.getTimerCount().getBackground().equals(Color.ORANGE)){
+                            view.getTimerCount().setBackground(Color.ORANGE);
+                        } else{
+                            view.getTimerCount().setBackground(null);
+                        }
+                    }
+                    if(remainingTime[0] <= 5){
+                        if (!view.getTimerCount().getBackground().equals(Color.RED)) {
+                            view.getTimerCount().setBackground(Color.RED);
+                            view.getTimerCount().setForeground(Color.WHITE);
+                        } else if (!view.getTimerCount().getBackground().equals(Color.ORANGE)) {
+                            view.getTimerCount().setBackground(Color.ORANGE);
+                            view.getTimerCount().setForeground(null);
+                        }
+                    }
+                } else {
+                    ((Timer) e.getSource()).stop(); // Stop the timer when it reaches 0
+                    view.getTimerCount().setText("Time's up!");
+                    view.getTimerCount().setBackground(Color.RED);
+                    view.getTimerCount().setForeground(Color.WHITE);
+                    skip(e);
+                    //skip();
+                    view.getTimerCount().setBackground(null);
+                    view.getTimerCount().setForeground(null);
+
+                }
+            }
+        });
+
+        // Start the timer
+        timer.start();
     }
 
     private void ringLayout() {
@@ -253,10 +315,12 @@ public abstract class Controller implements ActionListener {
 
         if (isTouchingExistingLetter) {
             if (model.play(view.getInputWord().toLowerCase(), view.getDirection(), view.getTargetRow(), view.getTargetCol())) {
+                timer.stop();
                 System.out.println("Input word " + view.getInputWord() + " Row: " + view.getTargetRow() + " Col: " + view.getTargetCol() + " Dir:" + view.getDirection());
                 JOptionPane.showMessageDialog(view.getFrame(), "Submitted word: " + view.getInputWord() + "\nIt is now " + model.getCurrentPlayer().getName() + "'s turn. They have " + model.getCurrentPlayer().getPoints() + " points.");
 
                 showScores(); // Show player scores here
+                timerMode();
             } else {
                 JOptionPane.showMessageDialog(view.getFrame(), "Tried to submit word: " + view.getInputWord() + "\nInvalid word. Please try again.");
             }
@@ -290,6 +354,7 @@ public abstract class Controller implements ActionListener {
     public void skip(ActionEvent e) {
         Game currentState = model;
         saveState();
+        timer.stop();
         view.addState(currentState);
         model.nextPlayer();
         view.updateHandPanel();
@@ -304,7 +369,7 @@ public abstract class Controller implements ActionListener {
         JOptionPane.showMessageDialog(view.getFrame(), "Skipping turn. It is now " + model.getCurrentPlayer().getName() + "'s turn. They have " + model.getCurrentPlayer().getPoints() + " points.");
 
         showScores(); // Shows player scores
-
+        timerMode();
         view.refreshHandPanel(false);
     }
 
@@ -315,64 +380,25 @@ public abstract class Controller implements ActionListener {
      * @param e the action event triggered by clicking the "AI Turn" button.
      */
     public void ai_turn(ActionEvent e){
+        timer.stop();
         Game currentState = model;
         view.addState(currentState);
         saveState();
         model.aiPlay();
-
-        boolean isTouchingExistingLetter = false;
-
-        // Check adjacency for each newly placed tile
-        for (Point p : view.getTilesPlacedThisTurn()) {
-            int row = p.x;
-            int col = p.y;
-
-            // Check adjacent tiles
-            if ((row > 0 && model.getBoard().getTile(row - 1, col).getLetter() != ' ') || // Above
-                    (row < 14 && model.getBoard().getTile(row + 1, col).getLetter() != ' ') || // Below
-                    (col > 0 && model.getBoard().getTile(row, col - 1).getLetter() != ' ') || // Left
-                    (col < 14 && model.getBoard().getTile(row, col + 1).getLetter() != ' ')) { // Right
-                isTouchingExistingLetter = true;
-                break;
-            }
-        }
-        if (!view.getVertical()) {
-            while (model.getBoard().getTile(view.getTargetRow(), view.getTargetCol() + view.getInputWord().length()).getLetter() != ' ') {
-                view.addInputWord(model.getBoard().getTile(view.getTargetRow(), view.getTargetCol() + view.getInputWord().length()).getLetter());
-            }
-        } else {
-            while (model.getBoard().getTile(view.getTargetRow() + view.getInputWord().length(), view.getTargetCol()).getLetter() != ' ') {
-                view.addInputWord(model.getBoard().getTile(view.getTargetRow() + view.getInputWord().length(), view.getTargetCol()).getLetter());
-            }
-        }
-
-        if (isTouchingExistingLetter) {
-            if (model.play(view.getInputWord().toLowerCase(), view.getDirection(), view.getTargetRow(), view.getTargetCol())) {
-                System.out.println("Input word " + view.getInputWord() + " Row: " + view.getTargetRow() + " Col: " + view.getTargetCol() + " Dir:" + view.getDirection());
-                JOptionPane.showMessageDialog(view.getFrame(), "Submitted word: " + view.getInputWord() + "\nIt is now " + model.getCurrentPlayer().getName() + "'s turn. They have " + model.getCurrentPlayer().getPoints() + " points.");
-
-                showScores(); // Show player scores here
-            } else {
-                JOptionPane.showMessageDialog(view.getFrame(), "Tried to submit word: " + view.getInputWord() + "\nInvalid word. Please try again.");
-            }
-        }
-
         view.getHorizontalButton().setEnabled(true);
         view.getVerticalButton().setEnabled(true);
-        if(view.getVertical()){
-            view.setDirection('V');
-        }else{
-            view.setDirection('H');
-        }
-        showScores();
-
         view.updateHandPanel();
         view.setFirstLetter(true);
         view.setBeforeStart(true);
         view.updateView();
         view.setInputWord("");
+
+        JOptionPane.showMessageDialog(view.getFrame(), "Word placed automatically!\nIt is now " + model.getCurrentPlayer().getName() + "'s turn.");
+        showScores(); // Show player scores here
+        timerMode();
 //        view.updateScoreboard(model.player);
         view.refreshHandPanel(false);
+
 
     }
 
@@ -383,6 +409,7 @@ public abstract class Controller implements ActionListener {
             restoreState(previousState);
             view.updateView();
             view.updateHandPanel();
+            timerMode();;
         } else {
             System.out.println("No undo available!");
         }
@@ -396,6 +423,7 @@ public abstract class Controller implements ActionListener {
             restoreState(nextState);
             view.updateView();
             view.updateHandPanel();
+            timer.restart();
         } else {
             System.out.println("No redo available!");
         }

@@ -15,6 +15,7 @@ class View implements Serializable {
     private Stack<Game> redo;
     private JMenu options;
     private JMenu premiumLayout;
+    private JMenu timerCount;
     private List<Point> tilesPlacedThisTurn = new ArrayList<>();
     private JPanel directionPanel;
     private int targetRow;
@@ -45,6 +46,9 @@ class View implements Serializable {
     private JMenuItem defaultLayout;
     private JMenuItem chaosLayout;
     private JMenuItem ringLayout;
+
+    private JMenuItem timerON;
+    private JMenuItem timerOFF;
 
     public JPanel getHandPanel() {
         return handPanel;
@@ -203,6 +207,13 @@ class View implements Serializable {
         premiumLayout.add(ringLayout);
         menu.add(premiumLayout);
 
+        timerCount = new JMenu("Timed Mode");
+        timerCount.setOpaque(true); // Make background visible
+        timerON = new JMenuItem("30s Timer");
+        timerOFF = new JMenuItem("Turn off timer");
+        timerCount.add(timerON);
+        menu.add(timerCount);
+
         defaultLayout.setEnabled(false);
         // Initialize hand panel
         handPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -252,7 +263,7 @@ class View implements Serializable {
         answer.setPreferredSize(new Dimension(100,100));
 
 
-        frame = new JFrame();
+        frame = new JFrame("Scrabble");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(1000,600));
         submit = new JButton("Submit");
@@ -483,6 +494,11 @@ class View implements Serializable {
     public JMenuItem getDefaultLayout(){ return defaultLayout;}
     public JMenuItem getChaosLayout(){ return chaosLayout;}
     public JMenuItem getRingLayout(){ return ringLayout;}
+
+    public JMenuItem getTimerON(){ return timerON;}
+    public JMenuItem getTimerOFF(){ return timerOFF;}
+
+    public JMenu getTimerCount(){ return timerCount;}
 
     public void setModel(Game model){
         this.model = model;
