@@ -66,7 +66,9 @@ public abstract class Controller implements ActionListener {
         view.getTimerCount().setBackground(new JMenu().getBackground());
         view.getTimerCount().setForeground(Color.black);
         view.getTimerCount().remove(view.getTimerOFF());
+        view.getTimerOFF().setEnabled(false);
         view.getTimerCount().add(view.getTimerON());
+        view.getTimerON().setEnabled(true);
         view.getTimerCount().setText("Timed Mode");
     }
 
@@ -75,6 +77,8 @@ public abstract class Controller implements ActionListener {
         view.getTimerCount().setBackground(new JMenu().getBackground());
         view.getTimerCount().setForeground(new JMenu().getForeground());
         view.getTimerCount().remove(view.getTimerON());
+        view.getTimerON().setEnabled(false);
+        view.getTimerOFF().setEnabled(true);
         view.getTimerCount().add(view.getTimerOFF());
         final int[] remainingTime = {30}; // must use a final single integer array for timer to access
         view.getTimerCount().setText("Time remaining: " + remainingTime[0]);
@@ -119,7 +123,6 @@ public abstract class Controller implements ActionListener {
     }
 
     private void ringLayout() {
-        System.out.println(model.start());
         if(model.start()) {
             model.getBoard().setPremiumLayout("src/premiumRing.xml");
             view.getChaosLayout().setEnabled(true);
@@ -320,7 +323,9 @@ public abstract class Controller implements ActionListener {
                 JOptionPane.showMessageDialog(view.getFrame(), "Submitted word: " + view.getInputWord() + "\nIt is now " + model.getCurrentPlayer().getName() + "'s turn. They have " + model.getCurrentPlayer().getPoints() + " points.");
 
                 showScores(); // Show player scores here
-                timerMode();
+                if(!view.getTimerON().isEnabled()){
+                    timerMode();
+                }
             } else {
                 JOptionPane.showMessageDialog(view.getFrame(), "Tried to submit word: " + view.getInputWord() + "\nInvalid word. Please try again.");
             }
@@ -368,7 +373,9 @@ public abstract class Controller implements ActionListener {
         JOptionPane.showMessageDialog(view.getFrame(), "Skipping turn. It is now " + model.getCurrentPlayer().getName() + "'s turn. They have " + model.getCurrentPlayer().getPoints() + " points.");
         showScores(); // Shows player scores
         view.updateHandPanel();
-        timerMode();
+        if(!view.getTimerON().isEnabled()){
+            timerMode();
+        }
         view.refreshHandPanel(false);
     }
 
@@ -394,7 +401,9 @@ public abstract class Controller implements ActionListener {
         JOptionPane.showMessageDialog(view.getFrame(), "Word placed automatically!\nIt is now " + model.getCurrentPlayer().getName() + "'s turn.");
         showScores(); // Show player scores here
         view.updateHandPanel();
-        timerMode();
+        if(!view.getTimerON().isEnabled()){
+            timerMode();
+        }
 //        view.updateScoreboard(model.player);
         view.refreshHandPanel(false);
 
@@ -408,7 +417,9 @@ public abstract class Controller implements ActionListener {
             restoreState(previousState);
             view.updateView();
             view.updateHandPanel();
-            timerMode();;
+            if(!view.getTimerON().isEnabled()){
+                timerMode();
+            }
         } else {
             System.out.println("No undo available!");
         }
@@ -422,7 +433,9 @@ public abstract class Controller implements ActionListener {
             restoreState(nextState);
             view.updateView();
             view.updateHandPanel();
-            timer.restart();
+            if(!view.getTimerON().isEnabled()){
+                timerMode();
+            }
         } else {
             System.out.println("No redo available!");
         }
