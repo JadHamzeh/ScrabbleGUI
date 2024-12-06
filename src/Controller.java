@@ -47,6 +47,9 @@ public abstract class Controller implements ActionListener {
         }
         view.getUndoMenuItem().addActionListener(e-> undoButton());
         view.getRedoMenuItem().addActionListener(e->redoButton());
+
+        view.getSaveMenuItem().addActionListener(e -> saveGame());
+        view.getLoadMenuItem().addActionListener(e -> loadGame());
         
         view.getDefaultLayout().addActionListener(e->defaultLayout());
         view.getChaosLayout().addActionListener(e->chaosLayout());
@@ -59,6 +62,34 @@ public abstract class Controller implements ActionListener {
         view.getHandPanel().repaint();
 //        view.initializeScoreboard(model.player);
         view.refreshHandPanel(false);
+    }
+
+    private void saveGame() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new FileOutputStream("savedGame.txt"))) {
+            oos.writeObject(model);
+            JOptionPane.showMessageDialog(view.getFrame(),
+                    "Game saved successfully!", "Save Game", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(view.getFrame(), "Error saving game: " + e.getMessage(), "Save Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void loadGame() {
+        try (ObjectInputStream ois = new ObjectInputStream(
+                new FileInputStream("savedGame.txt"))) {
+            model = (Game) ois.readObject(); //restore the saved game object
+            view.setModel(model); //set the view back to this model
+
+            //refresh view to account for current game state
+            view.updateView();
+            view.updateHandPanel();
+            JOptionPane.showMessageDialog(view.getFrame(), "Game loaded successfully!", "Load Game", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(view.getFrame(), "Error loading game: " + e.getMessage(), "Load Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void timerOff() {

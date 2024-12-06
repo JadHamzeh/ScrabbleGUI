@@ -43,6 +43,8 @@ class View implements Serializable {
     private JMenuItem undoMenuItem;
     private JMenuItem redoMenuItem;
 
+    private JMenuItem saveMenuItem;
+    private JMenuItem loadMenuItem;
     private JMenuItem defaultLayout;
     private JMenuItem chaosLayout;
     private JMenuItem ringLayout;
@@ -169,6 +171,9 @@ class View implements Serializable {
         return frame;
     }
 
+
+
+
     public void setInputWord(String inputWord) {
         this.inputWord = inputWord;
     }
@@ -197,6 +202,11 @@ class View implements Serializable {
         options.add(undoMenuItem);
         options.add(redoMenuItem);
         menu.add(options);
+
+        saveMenuItem = new JMenuItem("Save Game");
+        loadMenuItem = new JMenuItem("Load Game");
+        options.add(saveMenuItem);
+        options.add(loadMenuItem);
 
         premiumLayout = new JMenu("Premium Layout");
         defaultLayout = new JMenuItem("Default Scrabble Layout");
@@ -489,6 +499,14 @@ class View implements Serializable {
     }
     public JMenuItem getRedoMenuItem() {
         return redoMenuItem;
+    }
+
+    public JMenuItem getSaveMenuItem() {
+        return saveMenuItem;
+    }
+
+    public JMenuItem getLoadMenuItem() {
+        return loadMenuItem;
     }
 
     public JMenuItem getDefaultLayout(){ return defaultLayout;}
