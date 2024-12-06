@@ -217,11 +217,11 @@ class View implements Serializable {
         defaultLayout.setEnabled(false);
         // Initialize hand panel
         handPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        handPanel.setPreferredSize(new Dimension(700, 50));
+        handPanel.setPreferredSize(new Dimension(560, 100));
         handButtons = new CustomButton[7];
         for (int i = 0; i < 7; i++) {
             CustomButton tileButton = new CustomButton(String.valueOf(model.getCurrentPlayer().getHand().get(i).getLetter()));
-            tileButton.setPreferredSize(new Dimension(75, 50));
+            tileButton.setPreferredSize(new Dimension(100, 80));
             handButtons[i] = tileButton;
             handPanel.add(handButtons[i]);
         }
@@ -231,11 +231,13 @@ class View implements Serializable {
         // initialize ai_turn button;
 
         ai_turn = new JButton("Play AI Turn!");
-
+        ai_turn.setFont(new Font("Dialog", Font.PLAIN, 24));
         // Initialize the direction buttons
         directionPanel = new JPanel(new GridLayout(2, 1));
         verticalButton = new JButton("Vertical");
+        verticalButton.setFont(new Font("Dialog", Font.PLAIN, 24));
         horizontalButton = new JButton("Horizontal");
+        horizontalButton.setFont(new Font("Dialog", Font.PLAIN, 24));
         directionPanel.add(verticalButton);
         directionPanel.add(horizontalButton);
 
@@ -244,7 +246,7 @@ class View implements Serializable {
         for (int row = 0; row < 15; row++) {
             for (int col = 0; col < 15; col++) {
                 buttons[row][col] = new CustomButton();
-                buttons[row][col].setPreferredSize(new Dimension(40, 25));
+                buttons[row][col].setPreferredSize(new Dimension(65, 35));
                 buttons[row][col].setEnabled(false);
                 buttons[row][col].setRow(row);
                 buttons[row][col].setCol(col);
@@ -258,19 +260,16 @@ class View implements Serializable {
 
             }
         }
-        //Answer button
-        JPanel answer = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        answer.setPreferredSize(new Dimension(100,100));
-
 
         frame = new JFrame("Scrabble");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(1000,600));
+
         submit = new JButton("Submit");
-        submit.setPreferredSize(new Dimension(600, 80));
+
         skipPannel = new JPanel(new GridLayout(2, 1));
-        skipPannel.setPreferredSize(new Dimension(150,100));
+
         skip = new JButton("Skip");
+        skip.setFont(new Font("Dialog", Font.PLAIN, 24));
         skipPannel.add(skip);
         skipPannel.add(ai_turn);
         JPanel container = new JPanel(new GridLayout(15, 15, 0, 0));
@@ -285,10 +284,12 @@ class View implements Serializable {
         frame.add(directionPanel, BorderLayout.WEST);
         frame.add(container, BorderLayout.NORTH);
         frame.add(submit);
+        submit.setPreferredSize(new Dimension(450,150));
+        submit.setFont(new Font("Dialog", Font.PLAIN, 48));
         frame.add(skipPannel,BorderLayout.EAST);
         frame.pack();
         frame.setVisible(true);
-        frame.setResizable(false);
+
         frame.setJMenuBar(menu);
         updateView();
     }

@@ -63,7 +63,7 @@ public abstract class Controller implements ActionListener {
 
     private void timerOff() {
         timer.stop();
-        view.getTimerCount().setBackground(null);
+        view.getTimerCount().setBackground(new JMenu().getBackground());
         view.getTimerCount().setForeground(Color.black);
         view.getTimerCount().remove(view.getTimerOFF());
         view.getTimerCount().add(view.getTimerON());
@@ -72,8 +72,8 @@ public abstract class Controller implements ActionListener {
 
     private void timerMode() {
         timer.stop();
-        view.getTimerCount().setBackground(null);
-        view.getTimerCount().setForeground(null);
+        view.getTimerCount().setBackground(new JMenu().getBackground());
+        view.getTimerCount().setForeground(new JMenu().getForeground());
         view.getTimerCount().remove(view.getTimerON());
         view.getTimerCount().add(view.getTimerOFF());
         final int[] remainingTime = {30}; // must use a final single integer array for timer to access
@@ -88,7 +88,7 @@ public abstract class Controller implements ActionListener {
                         if (!view.getTimerCount().getBackground().equals(Color.ORANGE)){
                             view.getTimerCount().setBackground(Color.ORANGE);
                         } else{
-                            view.getTimerCount().setBackground(null);
+                            view.getTimerCount().setBackground(new JMenu().getBackground());
                         }
                     }
                     if(remainingTime[0] <= 5){
@@ -97,7 +97,7 @@ public abstract class Controller implements ActionListener {
                             view.getTimerCount().setForeground(Color.WHITE);
                         } else if (!view.getTimerCount().getBackground().equals(Color.ORANGE)) {
                             view.getTimerCount().setBackground(Color.ORANGE);
-                            view.getTimerCount().setForeground(null);
+                            view.getTimerCount().setForeground(new JMenu().getForeground());
                         }
                     }
                 } else {
@@ -107,8 +107,8 @@ public abstract class Controller implements ActionListener {
                     view.getTimerCount().setForeground(Color.WHITE);
                     skip(e);
                     //skip();
-                    view.getTimerCount().setBackground(null);
-                    view.getTimerCount().setForeground(null);
+                    view.getTimerCount().setBackground(new JMenu().getBackground());
+                    view.getTimerCount().setForeground(new JMenu().getForeground());
 
                 }
             }
