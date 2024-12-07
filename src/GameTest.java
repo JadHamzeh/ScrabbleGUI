@@ -28,7 +28,8 @@ public class GameTest {
      * Default constructor for the GameTest class.
      * Creates a new instance of the GameTest class.
      */
-    public GameTest() {}
+    public GameTest() {
+    }
 
     // Methods
 
@@ -48,12 +49,12 @@ public class GameTest {
         game = controller.getModel();
         view = game.getView();
         player = game.getCurrentPlayer();
-        while(!player.getHand().isEmpty()){
+        while (!player.getHand().isEmpty()) {
             player.removeTile(player.getHand().getFirst());
         }
-        game.tilePile.addTile(game.getBoard().getTile(7,7).letter, 1);
-        game.getBoard().setTile(7,7, new Tile('I'));
-        game.getBoard().getTile(7,7).setBonus("0");
+        game.tilePile.addTile(game.getBoard().getTile(7, 7).letter, 1);
+        game.getBoard().setTile(7, 7, new Tile('I'));
+        game.getBoard().getTile(7, 7).setBonus("0");
     }
 
     /**
@@ -73,7 +74,8 @@ public class GameTest {
      * AfterAll method runs once after all test cases in the class.
      * It prints a message indicating that all tests are done.
      */
-    @AfterAll static void tearDown() {
+    @AfterAll
+    static void tearDown() {
         System.out.print("All tests are done");
     }
 
@@ -100,6 +102,7 @@ public class GameTest {
         controller.getView().getDefaultLayout().doClick();
         assertEquals(controller.getModel().getBoard().getPremiumLayout(), "src/premiumDefault.xml", "Should be default layout");
     }
+
     /**
      * Test case for valid horizontal word placement.
      * Ensures the word "HELLO" can be placed correctly on the board.
@@ -115,10 +118,10 @@ public class GameTest {
         view.setTargetCol(7);
         view.setInputWord("HELL");
         view.setDirection('H');
-        view.addTilePlacedThisTurn(6,7);
-        view.addTilePlacedThisTurn(6,8);
-        view.addTilePlacedThisTurn(6,9);
-        view.addTilePlacedThisTurn(6,10);
+        view.addTilePlacedThisTurn(6, 7);
+        view.addTilePlacedThisTurn(6, 8);
+        view.addTilePlacedThisTurn(6, 9);
+        view.addTilePlacedThisTurn(6, 10);
 
         controller.getView().getSubmit().setEnabled(true);
         controller.getView().getSubmit().doClick();
@@ -144,7 +147,7 @@ public class GameTest {
         controller.getView().setTargetCol(5);
         controller.getView().setInputWord("WORD");
         controller.getView().setDirection('H');
-        controller.getView().addTilePlacedThisTurn(7,5);
+        controller.getView().addTilePlacedThisTurn(7, 5);
 
         controller.getView().getSubmit().setEnabled(true);
         String tempP = controller.getModel().getCurrentPlayer().getName();
@@ -184,8 +187,8 @@ public class GameTest {
         controller.getView().setTargetCol(7);
         controller.getView().setInputWord("HI");
         controller.getView().setDirection('V');
-        controller.getView().addTilePlacedThisTurn(6,7);
-        controller.getView().addTilePlacedThisTurn(7,7);
+        controller.getView().addTilePlacedThisTurn(6, 7);
+        controller.getView().addTilePlacedThisTurn(7, 7);
         controller.getView().getSubmit().setEnabled(true);
         System.out.println(controller.getModel().getCurrentPlayer().getName());
         controller.getView().getSubmit().doClick();
@@ -210,10 +213,10 @@ public class GameTest {
         controller.getView().setTargetCol(5);
         controller.getView().setInputWord("QUIZ");
         controller.getView().setDirection('H');
-        controller.getView().addTilePlacedThisTurn(7,5);
-        controller.getView().addTilePlacedThisTurn(7,6);
-        controller.getView().addTilePlacedThisTurn(7,7);
-        controller.getView().addTilePlacedThisTurn(7,8);
+        controller.getView().addTilePlacedThisTurn(7, 5);
+        controller.getView().addTilePlacedThisTurn(7, 6);
+        controller.getView().addTilePlacedThisTurn(7, 7);
+        controller.getView().addTilePlacedThisTurn(7, 8);
         controller.getView().getSubmit().setEnabled(true);
         controller.getView().getSubmit().doClick();
         controller.getView().updateView();
@@ -238,10 +241,10 @@ public class GameTest {
         controller.getView().setTargetCol(11);
         controller.getView().setInputWord("HOLD");
         controller.getView().setDirection('V');
-        controller.getView().addTilePlacedThisTurn(5,11);
-        controller.getView().addTilePlacedThisTurn(6,11);
-        controller.getView().addTilePlacedThisTurn(7,11);
-        controller.getView().addTilePlacedThisTurn(8,11);
+        controller.getView().addTilePlacedThisTurn(5, 11);
+        controller.getView().addTilePlacedThisTurn(6, 11);
+        controller.getView().addTilePlacedThisTurn(7, 11);
+        controller.getView().addTilePlacedThisTurn(8, 11);
         controller.getView().getSubmit().setEnabled(true);
         controller.getView().getSubmit().doClick();
         controller.getView().updateView();
@@ -251,15 +254,77 @@ public class GameTest {
 
     @Test
     @Order(10)
-    public void test_Undo(){
+    public void test_Undo() {
         controller.undoButton(); // hit the undo button
-        assertEquals(controller.getModel().getBoard().getTile(5,11).getLetter(), ' ',"Hold should not be on the board");
+        assertEquals(controller.getModel().getBoard().getTile(5, 11).getLetter(), ' ', "Hold should not be on the board");
     }
 
     @Test
     @Order(11)
-    public void test_Redo(){
+    public void test_Redo() {
         controller.redoButton(); // hit the redo button
-        assertEquals(controller.getModel().getBoard().getTile(5,11).getLetter(), 'H',"Hold should be on the board");
+        assertEquals(controller.getModel().getBoard().getTile(5, 11).getLetter(), 'H', "Hold should be on the board");
+    }
+
+    @Test
+    @Order(12)
+    public void test_SaveAndLoad() throws InterruptedException {
+
+        Player initialPlayer = controller.getModel().getCurrentPlayer();
+
+        initialPlayer.addTile(new Tile('A'));
+        initialPlayer.addTile(new Tile('A'));
+
+        controller.getView().setTargetRow(8);
+        controller.getView().setTargetCol(7);
+        controller.getView().setInputWord("AA");
+        controller.getView().setDirection('H');
+
+        controller.getView().addTilePlacedThisTurn(8, 7);
+        controller.getView().addTilePlacedThisTurn(8, 8);
+
+        controller.getView().getSubmit().setEnabled(true);
+        controller.getView().getSubmit().doClick();
+
+        //Save state described above
+        controller.getView().getSaveMenuItem().doClick();
+
+        Player secondPlayer = controller.getModel().getCurrentPlayer();
+
+        //Now, play another entire turn that will get wiped after loading
+        secondPlayer.addTile(new Tile('B'));
+        secondPlayer.addTile(new Tile('O'));
+
+        controller.getView().setTargetRow(11);
+        controller.getView().setTargetCol(7);
+        controller.getView().setInputWord("BO");
+        controller.getView().setDirection('H');
+        controller.getView().getSubmit().setEnabled(true);
+        controller.getView().getSubmit().doClick();
+
+        int player2Points = secondPlayer.getPoints();
+
+        //Ensure that P2's points got correctly updated
+        assertEquals(7,player2Points);
+
+        //Load previous game
+        controller.getView().getLoadMenuItem().doClick();
+
+
+        int player2UpdatedPoints = controller.getModel().getCurrentPlayer().getPoints();
+
+        Thread.sleep(500);
+
+        //Assert points are what they were before P2 played (0)
+        assertEquals(0, player2UpdatedPoints);
+
+        //Assert that the tiles P2 placed are not there
+        assertEquals(' ', controller.getModel().getBoard().getTile(11,7).getLetter());
+        assertEquals(' ', controller.getModel().getBoard().getTile(11,8).getLetter());
+
+        // Assert player 1's tiles are still there after load
+        assertEquals('A', controller.getModel().getBoard().getTile(8,7).getLetter());
+        assertEquals('A', controller.getModel().getBoard().getTile(8,8).getLetter());
+
     }
 }
